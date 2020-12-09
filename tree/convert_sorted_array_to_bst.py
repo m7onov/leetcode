@@ -14,7 +14,7 @@ One possible answer is: [0,-3,9,-10,null,5], which represents the following heig
    /   /
  -10  5
 """
-from typing import List
+from typing import List, Optional
 
 
 class TreeNode:
@@ -30,7 +30,7 @@ class TreeNode:
         return str(self.val)
 
 
-def sorted_array_to_bst(nums: List[int]) -> TreeNode:
+def sorted_array_to_bst(nums: List[int]) -> Optional[TreeNode]:
     nums_len = len(nums)
     root_idx = nums_len // 2
 

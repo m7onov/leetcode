@@ -3,7 +3,7 @@ This is my own implementation of binary tree
 
 https://en.wikipedia.org/wiki/Binary_tree
 """
-from typing import Optional
+from typing import Optional, Iterator
 
 
 class TreeNode:
@@ -13,8 +13,11 @@ class TreeNode:
         self.left = left
         self.right = right
 
+    def __str__(self):
+        return str(self.val)
 
-class BST:
+
+class BinaryTree:
 
     def __init__(self, root: TreeNode = None):
         self.root = root
@@ -41,7 +44,7 @@ class BST:
     @staticmethod
     def validate_path(path: str, is_raise: bool = True) -> str:
         path = path.strip().lower()
-        BST.check_path(path, is_raise)
+        BinaryTree.check_path(path, is_raise)
         return path
 
     @staticmethod
@@ -69,7 +72,7 @@ class BST:
         :param path: node path in current tree, e.g. 'lrrlrr', case insensitive, non-empty
         :return: requested node or None
         """
-        path = BST.validate_path(path)
+        path = BinaryTree.validate_path(path)
         node = self.root
         for d in path:
             if node is not None:
@@ -88,21 +91,46 @@ class BST:
         :param node: target node to be put
         :return:
         """
-        path = BST.validate_path(path)
+        path = BinaryTree.validate_path(path)
         cur_node = self.root
         for d in path[:-1]:
-            next_node = BST.get_child(cur_node, d)
+            next_node = BinaryTree.get_child(cur_node, d)
             if next_node is None:
-                next_node = BST.put_child(cur_node, d, TreeNode())
+                next_node = BinaryTree.put_child(cur_node, d, TreeNode())
 
             cur_node = next_node
 
-        BST.put_child(cur_node, path[-1], node)
+        BinaryTree.put_child(cur_node, path[-1], node)
 
-    def inorder_tree_walk(self):
+    @staticmethod
+    def inorder_tree_walk_recursion(root: TreeNode) -> Iterator[TreeNode]:
+        if root is None:
+            return
+
+        yield from BinaryTree.inorder_tree_walk_recursion(root.left)
+        yield root
+        yield from BinaryTree.inorder_tree_walk_recursion(root.right)
+
+    def inorder_tree_walk(self) -> Iterator[TreeNode]:
+        yield from self.inorder_tree_walk_recursion(self.root)
+
+    def preorder_tree_walk(self) -> Iterator[TreeNode]:
+        pass
+
+    def postorder_tree_walk(self) -> Iterator[TreeNode]:
         pass
 
 
-bst = BST()
-bst.put_node('lrlrlrl', TreeNode('hello'))
-print(bst)
+# bst = BinaryTree()
+# bst.put_node('lrlrlrl', TreeNode('hello'))
+# print(bst)
+
+_root = TreeNode(7)
+_root.left = TreeNode(3)
+_root.right = TreeNode(15)
+_root.right.left = TreeNode(9)
+_root.right.right = TreeNode(20)
+
+_tree = BinaryTree(_root)
+for _node in _tree.inorder_tree_walk():
+    print(_node)
