@@ -25,6 +25,8 @@ Constraints:
 The number of nodes in the tree is in the range [0, 104].
 -100 <= Node.val <= 100
 """
+
+
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val = val
@@ -32,9 +34,6 @@ class TreeNode:
         self.right = right
 
     def __str__(self):
-        return str(self.val)
-
-    def __repr__(self):
         return str(self.val)
 
 

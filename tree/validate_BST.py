@@ -39,9 +39,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
 
 def is_valid_bst_iterative(root: TreeNode) -> bool:
     if root is None:

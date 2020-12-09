@@ -28,9 +28,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
 
 class Solution:
     def max_depth_recursive_dumb(self, root: TreeNode) -> int:

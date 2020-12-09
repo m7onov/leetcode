@@ -24,9 +24,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
 
 def inorder_tree_walk(root: TreeNode, head_and_tail: List):
     if root is None:

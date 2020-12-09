@@ -40,13 +40,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
-
-def get_leftmost_node(root: TreeNode, level: int):
-    pass
-
 
 def get_next_level_leftmost_node(node: TreeNode) -> Optional[TreeNode]:
     if node.left is not None:

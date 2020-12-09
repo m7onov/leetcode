@@ -31,9 +31,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
 
 def inorder_tree_walk(root: TreeNode, from_left_to_right: bool = True):
     if root is None:

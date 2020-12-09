@@ -26,9 +26,6 @@ class TreeNode:
     def __str__(self):
         return str(self.val)
 
-    def __repr__(self):
-        return str(self.val)
-
 
 def sorted_array_to_bst(nums: List[int]) -> Optional[TreeNode]:
     nums_len = len(nums)
