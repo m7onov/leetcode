@@ -63,3 +63,6 @@ def num_pairs_divisible_by_60_elegant(time: List[int]) -> int:
 
 print(num_pairs_divisible_by_60_mathy([30, 20, 150, 100, 40]))
 print(num_pairs_divisible_by_60_mathy([60, 60, 60]))
+
+
+# TODO: what if we need 3 songs with total duration divisible by 60 or some other number?
