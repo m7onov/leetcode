@@ -19,17 +19,7 @@ But the following [1,2,2,null,3,null,3] is not:
 Follow up: Solve it both recursively and iteratively.
 """
 from itertools import zip_longest
-
-
-# Definition for a binary tree node.
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
+from tree import TreeNode
 
 
 def inorder_tree_walk(root: TreeNode, from_left_to_right: bool = True):

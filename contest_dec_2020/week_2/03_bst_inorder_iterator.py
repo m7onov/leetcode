@@ -45,16 +45,7 @@ Follow up:
 Could you implement next() and hasNext() to run in average O(1) time and use O(h) memory, where h is the height of the tree?
 """
 from typing import Optional, Tuple, List, Iterator
-
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
+from tree import TreeNode
 
 
 class BstIteratorNonRecursive:

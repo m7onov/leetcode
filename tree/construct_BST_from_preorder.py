@@ -19,20 +19,8 @@ Constraints:
 1 <= preorder[i] <= 10^8
 The values of preorder are distinct.
 """
-from typing import List, Optional
-
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
-
-    def __repr__(self):
-        return self.__str__()
+from typing import List
+from tree import TreeNode
 
 
 def bst_from_preorder(preorder: List[int]) -> TreeNode:

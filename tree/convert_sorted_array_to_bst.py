@@ -15,16 +15,7 @@ One possible answer is: [0,-3,9,-10,null,5], which represents the following heig
  -10  5
 """
 from typing import List, Optional
-
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
+from tree import TreeNode
 
 
 def sorted_array_to_bst(nums: List[int]) -> Optional[TreeNode]:
