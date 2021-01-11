@@ -13,16 +13,7 @@ Input: root = [5,1,7]
 Output: [1,null,5,null,7]
 """
 from typing import List
-
-
-class TreeNode:
-    def __init__(self, val=None, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
+from tree import TreeNode
 
 
 def inorder_tree_walk(root: TreeNode, head_and_tail: List):

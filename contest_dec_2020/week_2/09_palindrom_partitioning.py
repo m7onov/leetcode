@@ -70,6 +70,7 @@ sol = MySolution()
 profile.run('''sol.partition('aaaaaaaaaaaaaaaa')''')
 
 
+# более простое решение (чужое)
 # class Solution2:
 #     def isPal(self, s):
 #         return s == s[::-1]
@@ -92,6 +93,7 @@ profile.run('''sol.partition('aaaaaaaaaaaaaaaa')''')
 # profile.run('''sol2.partition('aaaaaaaaaaaaaaaa')''')
 
 
+# более просто решение (чужое)
 # class Solution3:
 #     def partition(self, s: str) -> List[List[str]]:
 #         if not s:

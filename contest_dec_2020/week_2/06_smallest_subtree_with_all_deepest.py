@@ -32,19 +32,7 @@ The number of nodes in the tree will be in the range [1, 500].
 The values of the nodes in the tree are unique.
 """
 from typing import List
-
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        return str(self.val)
-
-    def __repr__(self):
-        return self.__str__()
+from tree import TreeNode
 
 
 def dfs(root: TreeNode, upper_path: List[TreeNode], deepest_paths: List[List[TreeNode]]):

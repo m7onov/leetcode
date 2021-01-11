@@ -28,20 +28,10 @@ The number of nodes in the given tree is less than 6000.
 -100 <= node.val <= 100
 """
 from typing import Optional
+from tree import TreeNodeLL
 
 
-class TreeNode:
-    def __init__(self, val=None, left=None, right=None, nx=None):
-        self.val = val
-        self.left = left
-        self.right = right
-        self.next = nx
-
-    def __str__(self):
-        return str(self.val)
-
-
-def get_next_level_leftmost_node(node: TreeNode) -> Optional[TreeNode]:
+def get_next_level_leftmost_node(node: TreeNodeLL) -> Optional[TreeNodeLL]:
     if node.left is not None:
         node = node.left
     elif node.right is not None:
@@ -54,7 +44,7 @@ def get_next_level_leftmost_node(node: TreeNode) -> Optional[TreeNode]:
     return node
 
 
-def connect_trees(left_tree: TreeNode, right_tree: TreeNode):
+def connect_trees(left_tree: TreeNodeLL, right_tree: TreeNodeLL):
     left_tree_left_edge = left_tree
     right_tree_left_edge = right_tree
 
@@ -71,7 +61,7 @@ def connect_trees(left_tree: TreeNode, right_tree: TreeNode):
         right_tree_left_edge = get_next_level_leftmost_node(right_tree_left_edge)
 
 
-def connect(root: TreeNode) -> Optional[TreeNode]:
+def connect(root: TreeNodeLL) -> Optional[TreeNodeLL]:
     if root is None:
         return root
 
@@ -84,45 +74,45 @@ def connect(root: TreeNode) -> Optional[TreeNode]:
     return root
 
 
-# _root = TreeNode(0)
-# _root.left = TreeNode(1)
-# _root.right = TreeNode(2)
-# _root.left.left = TreeNode(3)
-# _root.left.right = TreeNode(4)
-# _root.right.left = TreeNode(5)
-# _root.right.right = TreeNode(6)
-# _root.left.left.left = TreeNode(7)
-# _root.left.left.right = TreeNode(8)
-# _root.left.right.left = TreeNode(9)
-# _root.left.right.right = TreeNode(10)
+# _root = TreeNodeLL(0)
+# _root.left = TreeNodeLL(1)
+# _root.right = TreeNodeLL(2)
+# _root.left.left = TreeNodeLL(3)
+# _root.left.right = TreeNodeLL(4)
+# _root.right.left = TreeNodeLL(5)
+# _root.right.right = TreeNodeLL(6)
+# _root.left.left.left = TreeNodeLL(7)
+# _root.left.left.right = TreeNodeLL(8)
+# _root.left.right.left = TreeNodeLL(9)
+# _root.left.right.right = TreeNodeLL(10)
 
-# _root = TreeNode(1)
-# _root.left = TreeNode(2)
-# _root.right = TreeNode(3)
-# _root.left.left = TreeNode(4)
-# _root.right.right = TreeNode(5)
+# _root = TreeNodeLL(1)
+# _root.left = TreeNodeLL(2)
+# _root.right = TreeNodeLL(3)
+# _root.left.left = TreeNodeLL(4)
+# _root.right.right = TreeNodeLL(5)
 
-# _root = TreeNode(1)
-# _root.left = TreeNode(2)
-# _root.right = TreeNode(3)
-# _root.left.left = TreeNode(4)
-# _root.left.right = TreeNode(5)
-# _root.right.right = TreeNode(6)
-# _root.left.left.left = TreeNode(7)
-# _root.right.right.right = TreeNode(8)
+# _root = TreeNodeLL(1)
+# _root.left = TreeNodeLL(2)
+# _root.right = TreeNodeLL(3)
+# _root.left.left = TreeNodeLL(4)
+# _root.left.right = TreeNodeLL(5)
+# _root.right.right = TreeNodeLL(6)
+# _root.left.left.left = TreeNodeLL(7)
+# _root.right.right.right = TreeNodeLL(8)
 
-_root = TreeNode(2)
-_root.left = TreeNode(1)
-_root.right = TreeNode(3)
-_root.left.left = TreeNode(0)
-_root.left.right = TreeNode(7)
-_root.right.left = TreeNode(9)
-_root.right.right = TreeNode(1)
-_root.left.left.left = TreeNode(2)
-_root.left.right.left = TreeNode(1)
-_root.left.right.right = TreeNode(0)
-_root.right.right.left = TreeNode(8)
-_root.right.right.right = TreeNode(8)
-_root.left.right.right.left = TreeNode(7)
+_root = TreeNodeLL(2)
+_root.left = TreeNodeLL(1)
+_root.right = TreeNodeLL(3)
+_root.left.left = TreeNodeLL(0)
+_root.left.right = TreeNodeLL(7)
+_root.right.left = TreeNodeLL(9)
+_root.right.right = TreeNodeLL(1)
+_root.left.left.left = TreeNodeLL(2)
+_root.left.right.left = TreeNodeLL(1)
+_root.left.right.right = TreeNodeLL(0)
+_root.right.right.left = TreeNodeLL(8)
+_root.right.right.right = TreeNodeLL(8)
+_root.left.right.right.left = TreeNodeLL(7)
 
 connect(_root)
