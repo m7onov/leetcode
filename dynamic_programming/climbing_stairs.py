@@ -25,4 +25,22 @@ Constraints:
 
 
 def climb_stairs(n: int) -> int:
-    pass
+    cur_c, n1, n2 = 0, 0, 0
+    for i in range(n):
+        if i == 0:
+            cur_c = 1
+            n1 = 1
+
+        elif i == 1:
+            cur_c = 2
+            n2 = 2
+
+        else:
+            cur_c = n1 + n2
+            n1 = n2
+            n2 = cur_c
+
+    return cur_c
+
+
+print(climb_stairs(3))
