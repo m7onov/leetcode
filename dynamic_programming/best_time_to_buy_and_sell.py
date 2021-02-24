@@ -24,5 +24,16 @@ Constraints:
 from typing import List
 
 
-def max_profit(prices: List[int]) -> int:
-    pass
+def max_profit_single_day(prices: List[int]) -> int:
+    min_price = float('inf')
+    max_profit = 0
+    for p in prices:
+        if p < min_price:
+            min_price = p
+        elif p - min_price > max_profit:
+            max_profit = p - min_price
+
+    return max_profit
+
+
+print(max_profit_single_day([7, 1, 5, 3, 6, 4]))
