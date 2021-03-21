@@ -24,8 +24,60 @@ Constraints:
 1 <= nums.length <= 100
 0 <= nums[i] <= 400
 """
-from typing import List
+from typing import List, Tuple
 
 
 def rob(nums: List[int]) -> int:
-    pass
+    # элемент с индексом i - это сумма оптимальной последовательности от n[0] .. n[i]
+    # opt_sum = [nums[0], max(nums[0], nums[1])]
+    opt_sum = []
+    for i, n in enumerate(nums):
+        if i == 0:
+            opt_sum.append(n)
+        elif i == 1:
+            opt_sum.append(max(opt_sum[-1], n))
+        else:
+            v1 = opt_sum[i-2] + n
+            v2 = opt_sum[i-1]
+            opt_sum.append(max(v1, v2))
+
+    return opt_sum[-1]
+
+
+def rob_with_path(nums: List[int]) -> Tuple[int, List[int]]:
+    # элемент с индексом i - это сумма оптимальной последовательности от n[0] .. n[i]
+    # opt_sum = [nums[0], max(nums[0], nums[1])]
+    opt_sum = []
+    for i, n in enumerate(nums):
+        if i == 0:
+            opt_sum.append(n)
+        elif i == 1:
+            opt_sum.append(max(opt_sum[-1], n))
+        else:
+            v1 = opt_sum[i-2] + n
+            v2 = opt_sum[i-1]
+            opt_sum.append(max(v1, v2))
+
+    # найти выбранные индексы
+    opt_path = []
+    i = len(nums)-1
+    while i >= 0:
+        if i == 0:
+            opt_path.append(i)
+            i -= 1
+        else:
+            if opt_sum[i] == opt_sum[i-1]:
+                i -= 1
+            else:
+                opt_path.append(i)
+                i -= 2
+
+    opt_path.reverse()
+    return opt_sum[-1], opt_path
+
+
+print(rob([1, 2, 3, 1]))
+print(rob([2, 7, 9, 3, 1]))
+
+print(rob_with_path([1, 2, 3, 1]))
+print(rob_with_path([2, 7, 9, 3, 1]))
