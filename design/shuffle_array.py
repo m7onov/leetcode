@@ -30,24 +30,43 @@ All the elements of nums are unique.
 At most 5 * 10^4 calls will be made to reset and shuffle.
 """
 from typing import List
+from random import randint
+from collections import defaultdict
 
 
 class Solution:
 
     def __init__(self, nums: List[int]):
-        pass
+        self.nums = nums
 
     def reset(self) -> List[int]:
-        """
-        Resets the array to its original configuration and return it.
-        """
+        return self.nums
 
-    def shuffle(self) -> List[int]:
-        """
-        Returns a random shuffling of the array.
-        """
+    def shuffle_brute_force(self) -> List[int]:
+        n = len(self.nums)
+        ret_list = []
+        aux_list = self.nums.copy()
+        for i in range(n):
+            j = randint(0, n - 1 - i)
+            ret_list.append(aux_list.pop(j))
 
-# Your Solution object will be instantiated and called as such:
-# obj = Solution(nums)
-# param_1 = obj.reset()
-# param_2 = obj.shuffle()
+        return ret_list
+
+    def shuffle_fisher_yates(self) -> List[int]:
+        n = len(self.nums)
+        ret_list = self.nums.copy()
+        for i in range(n - 1):
+            j = randint(i, n - 1)
+            ret_list[i], ret_list[j] = ret_list[j], ret_list[i]
+
+        return ret_list
+
+
+obj = Solution([1, 2, 3])
+
+m = defaultdict(int)
+for _i in range(10000):
+    v = "".join([str(i) for i in obj.shuffle_fisher_yates()])
+    m[v] += 1
+
+print('\n'.join([str(i) for i in m.values()]))
