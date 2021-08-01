@@ -35,28 +35,33 @@ At most 3 * 10^4 calls will be made to push, pop, top, and getMin.
 
 
 class MinStack:
-
     def __init__(self):
-        """
-        initialize your data structure here.
-        """
-        pass
+        self.stack = []
+        self.stack_mins = []
 
     def push(self, val: int) -> None:
-        pass
+        self.stack.append(val)
+        if len(self.stack_mins) == 0 or val < self.stack_mins[-1]:
+            self.stack_mins.append(val)
+        else:
+            self.stack_mins.append(self.stack_mins[-1])
 
     def pop(self) -> None:
-        pass
+        self.stack.pop()
+        self.stack_mins.pop()
 
     def top(self) -> int:
-        pass
+        return self.stack[-1]
 
-    def getMin(self) -> int:
-        pass
+    def get_min(self) -> int:
+        return self.stack_mins[-1]
 
-# Your MinStack object will be instantiated and called as such:
-# obj = MinStack()
-# obj.push(val)
-# obj.pop()
-# param_3 = obj.top()
-# param_4 = obj.getMin()
+
+minStack = MinStack()
+minStack.push(-2)
+minStack.push(0)
+minStack.push(-3)
+print(minStack.get_min())    # return -3
+minStack.pop()
+print(minStack.top())        # return 0
+print(minStack.get_min())    # return -2
