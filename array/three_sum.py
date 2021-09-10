@@ -22,12 +22,12 @@ Constraints:
 0 <= nums.length <= 3000
 -10^5 <= nums[i] <= 10^5
 """
+
 from typing import List
-from collections import defaultdict
 
 
 class Solution:
-    def threeSum1(self, nums: List[int]) -> List[List[int]]:
+    def three_sum_with_2pointers(self, nums: List[int]) -> List[List[int]]:
         result = []
         nums = sorted(nums)
         np = None
@@ -57,13 +57,44 @@ class Solution:
 
         return result
 
-    def threeSum2(self, nums: List[int]) -> List[List[int]]:
-        pass
+    def three_sum_with_hashes(selfs, nums: List[int]) -> List[List[int]]:
+        def log(msg):
+            pass
+
+        result = []
+        nums = sorted(nums)
+        nums_len = len(nums)
+        n_previous = None
+        for i, n in enumerate(nums):
+            if n > 0:
+                break
+            if n == n_previous:
+                continue
+            log(f'n = {n}')
+            seen = set()
+            nli = i+1
+            while nli < nums_len:
+                nl = nums[nli]
+                nli += 1
+                log(f'searching: {-n-nl}')
+                if -n-nl in seen:
+                    log(f'append to result: {n, nl, -n-nl}')
+                    result.append([n, nl, -n-nl])
+                    while nli < nums_len and nums[nli] == nl:
+                        nli += 1
+                log('add to seen: ' + str(nl))
+                seen.add(nl)
+            n_previous = n
+        return result
 
 
 sol = Solution()
-print(sol.threeSum1([-1, 0, 1, 2, -1, -4]))
-print(sol.threeSum1([-1, -1, 0, 1, -1, 2, -1, -4, 0]))
-print(sol.threeSum1([0, 0]))
-print(sol.threeSum1([0, 0, 0]))
+print(sol.three_sum_with_2pointers([-1, 0, 1, 2, -1, -4]))
+print(sol.three_sum_with_2pointers([]))
+print(sol.three_sum_with_2pointers([0]))
+print(sol.three_sum_with_2pointers([0, 0, 0]))
 
+print(sol.three_sum_with_hashes([-1, 0, 1, 2, -1, -4]))
+print(sol.three_sum_with_hashes([]))
+print(sol.three_sum_with_hashes([0]))
+print(sol.three_sum_with_hashes([0, 0, 0]))
