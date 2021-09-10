@@ -30,9 +30,6 @@ from typing import List
 
 class Solution:
     def setZeroes(self, matrix: List[List[int]]) -> None:
-        """
-        Do not return anything, modify matrix in-place instead.
-        """
         num_rows = len(matrix)
         num_cols = len(matrix[0])
         zero_row_idxs = set()
@@ -51,37 +48,71 @@ class Solution:
     def setZeroesConstantSpace(self, matrix: List[List[int]]) -> None:
         num_rows = len(matrix)
         num_cols = len(matrix[0])
+        indicator_row_idx = None
+        indicator_col_idx = None
         for ri in range(num_rows):
             for ci in range(num_cols):
                 if matrix[ri][ci] == 0:
-                    for ci2 in range(ci):
-                        matrix[ri][ci2] = 0
-                    for ri2 in range(ri):
-                        matrix[ri2][ci] = 0
+                    # print(ri, ci, '(', indicator_row_idx, indicator_col_idx, ')', ' = ', 0)
+                    if indicator_row_idx is None:
+                        indicator_row_idx = ri
+                        indicator_col_idx = ci
+                        for i in range(num_cols):
+                            matrix[ri][i] = 0 if matrix[ri][i] != 0 else 1
+                        for i in range(num_rows):
+                            matrix[i][ci] = 0 if matrix[i][ci] != 0 else 1
+                    elif ri != indicator_row_idx and ci != indicator_col_idx:
+                        # print('set')
+                        matrix[ri][indicator_col_idx] = 1
+                        matrix[indicator_row_idx][ci] = 1
+
+        if indicator_row_idx is None:
+            return
+
+        # print('\n'.join(str(m) for m in matrix))
+
+        for ri in range(num_rows):
+            for ci in range(num_cols):
+                if ri != indicator_row_idx and ci != indicator_col_idx:
+                    if matrix[ri][indicator_col_idx] == 1 or matrix[indicator_row_idx][ci] == 1:
+                        matrix[ri][ci] = 0
+
+        for i in range(num_cols):
+            matrix[indicator_row_idx][i] = 0
+
+        for i in range(num_rows):
+            matrix[i][indicator_col_idx] = 0
 
 
 sol = Solution()
-indata = [[1, 1, 1],
-          [1, 0, 1],
-          [1, 1, 1]]
-sol.setZeroes(indata)
-print(indata)
 
-indata = [[0, 1, 2, 0],
-          [3, 4, 5, 2],
-          [1, 3, 1, 5]]
-sol.setZeroes(indata)
-print(indata)
+# indata = [[1, 1, 1],
+#           [1, 0, 1],
+#           [1, 1, 1]]
+# sol.setZeroes(indata)
+# print(indata)
+#
+# indata = [[0, 1, 2, 0],
+#           [3, 4, 5, 2],
+#           [1, 3, 1, 5]]
+# sol.setZeroes(indata)
+# print(indata)
 
-indata = [[1, 1, 1],
-          [1, 0, 1],
-          [1, 1, 1]]
+# indata = [[1, 1, 1],
+#           [1, 0, 1],
+#           [1, 1, 1]]
+# sol.setZeroesConstantSpace(indata)
+# print(indata)
+
+# indata = [[0, 1, 2, 0],
+#           [3, 4, 5, 2],
+#           [1, 3, 1, 5]]
+# sol.setZeroesConstantSpace(indata)
+# print(indata)
+
+indata = [[1, 2, 3, 4],
+          [5, 0, 7, 8],
+          [0, 10, 11, 12],
+          [13, 14, 15, 0]]
 sol.setZeroesConstantSpace(indata)
 print(indata)
-
-indata = [[0, 1, 2, 0],
-          [3, 4, 5, 2],
-          [1, 3, 1, 5]]
-sol.setZeroesConstantSpace(indata)
-print(indata)
-
