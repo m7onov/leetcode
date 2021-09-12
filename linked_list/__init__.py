@@ -35,3 +35,16 @@ def make_linked_list_from_list(a: List[int]) -> ListNode:
             tail = tail.next
 
     return head
+
+
+def get_by_index(a: ListNode, i: int) -> ListNode:
+    cur_node = None
+    for i in range(i+1):
+        if cur_node is None:
+            cur_node = a
+        else:
+            cur_node = cur_node.next
+            if cur_node is None:
+                break
+
+    return cur_node
