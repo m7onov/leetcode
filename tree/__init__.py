@@ -1,7 +1,5 @@
 from typing import List
 
-import binarytree
-
 
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -50,8 +48,3 @@ def init_tree_from_level_array(array: List[int]) -> TreeNode:
         level_num += 1
 
     return root
-
-
-# noinspection PyProtectedMember,PyTypeChecker
-def pretty_print(root: TreeNode) -> str:
-    return '\n'.join(binarytree._build_tree_string(root, 0)[0])
