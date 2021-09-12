@@ -27,16 +27,7 @@ The number of nodes in each linked list is in the range [1, 100].
 It is guaranteed that the list represents a number that does not have leading zeros.
 """
 from typing import Optional
-
-
-# Definition for singly-linked list.
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-    def __str__(self):
-        return f'{self.val} -> {self.next}'
+from linked_list import ListNode, make_linked_list_from_number
 
 
 class Solution:
@@ -73,25 +64,12 @@ class Solution:
         return result
 
 
-def makeLinkedListFromNumber(n: int):
-    result = ListNode()
-    node = None
-    for i in reversed(str(n)):
-        if node is None:
-            node = result
-        else:
-            node.next = ListNode()
-            node = node.next
-        node.val = int(i)
-    return result
-
-
 sol = Solution()
-res = sol.addTwoNumbers(makeLinkedListFromNumber(342), makeLinkedListFromNumber(465))
+res = sol.addTwoNumbers(make_linked_list_from_number(342), make_linked_list_from_number(465))
 print(res)
 
-res = sol.addTwoNumbers(makeLinkedListFromNumber(0), makeLinkedListFromNumber(0))
+res = sol.addTwoNumbers(make_linked_list_from_number(0), make_linked_list_from_number(0))
 print(res)
 
-res = sol.addTwoNumbers(makeLinkedListFromNumber(9999999), makeLinkedListFromNumber(9999))
+res = sol.addTwoNumbers(make_linked_list_from_number(9999999), make_linked_list_from_number(9999))
 print(res)
