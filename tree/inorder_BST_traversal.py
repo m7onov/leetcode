@@ -44,6 +44,45 @@ from tree import TreeNode, init_tree_from_level_array
 
 
 class Solution:
+    def inorderTraversalRecursive(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+
+        def helper(node: TreeNode):
+            if node is not None:
+                if node.left is not None:
+                    helper(node.left)
+                res.append(node.val)
+                if node.right is not None:
+                    helper(node.right)
+
+        helper(root)
+        return res
+
+    def inorderTraversal2(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+        stack = []
+        cur_node = root
+
+        while cur_node is not None:
+            print(f'begin outer stack: {stack}, cur_node: {cur_node}')
+            while cur_node.left is not None:
+                stack.append(cur_node)
+                cur_node = cur_node.left
+                print(f'branch left stack: {stack}, cur_node: {cur_node}')
+
+            print(f'append to res: {cur_node.val}')
+            res.append(cur_node.val)
+
+            if cur_node.right is not None:
+                print(f'branch right stack: {stack}, cur_node: {cur_node}')
+                stack.append(cur_node)
+                cur_node = cur_node.right
+
+            cur_node = stack.pop()
+            print(f'stack pop stack: {stack}, cur_node: {cur_node}')
+
+        return res
+
     def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
         # Note: look at contest_dec_2020/week2/03_bst_inorder_iterator.py
         if root is None:
@@ -80,10 +119,16 @@ sol = Solution()
 # tr.right.left = TreeNode(3)
 # print(sol.inorderTraversal(tr))
 
+# tr = TreeNode(1)
+# tr.left = TreeNode(2)
+# tr.right = TreeNode(3)
+# tr.right.left = TreeNode(4)
+# tr.right.right = TreeNode(5)
+# print(sol.inorderTraversal(tr))
+
 tr = TreeNode(1)
 tr.left = TreeNode(2)
 tr.right = TreeNode(3)
 tr.right.left = TreeNode(4)
 tr.right.right = TreeNode(5)
-print(sol.inorderTraversal(tr))
-
+print(sol.inorderTraversal2(tr))
