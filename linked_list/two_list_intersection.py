@@ -124,25 +124,70 @@ class Solution:
         list_sign(headB, '+')
         return result
 
+    # the best one; without trick of negating values
+    def getIntersectionNode3(self, headA: ListNode, headB: ListNode) -> ListNode:
+        def get_linked_list_len(head):
+            cur_node = head
+            ll_len = 0
+            while cur_node is not None:
+                ll_len += 1
+                cur_node = cur_node.next
+            return ll_len
+
+        def move_to_index(head, idx):
+            while idx > 0:
+                head = head.next
+                idx -= 1
+            return head
+
+        len_a = get_linked_list_len(headA)
+        len_b = get_linked_list_len(headB)
+
+        start_a = headA
+        start_b = headB
+        if len_a < len_b:
+            start_b = move_to_index(headB, len_b - len_a)
+        elif len_b < len_a:
+            start_a = move_to_index(headA, len_a - len_b)
+
+        # now start_a and start_b lists have the same length
+        while start_a is not None and start_a != start_b:
+            start_a = start_a.next
+            start_b = start_b.next
+
+        return start_a
+
 
 sol = Solution()
 
-# a = make_linked_list_from_list([4, 1, 8, 4, 5])
-# b = make_linked_list_from_list([5, 6, 1, 8, 4, 5])
-# get_by_index(a, 1).next = get_by_index(b, 3)
-# print(sol.getIntersectionNode(a, b))
-# print(a)
-# print(b)
+a = make_linked_list_from_list([4, 1, 8, 4, 5])
+b = make_linked_list_from_list([5, 6, 1, 8, 4, 5])
+get_by_index(a, 1).next = get_by_index(b, 3)
+print(f'a: {a}')
+print(f'b: {b}')
+print('intersection:', sol.getIntersectionNode3(a, b))
 #
-# a = make_linked_list_from_list([1])
-# b = a
-# print(sol.getIntersectionNode(a, b))
+print('--------------')
 #
-# a = make_linked_list_from_list([1, 2])
-# b = make_linked_list_from_list([2])
-# get_by_index(a, 0).next = get_by_index(b, 0)
-# print(sol.getIntersectionNode(a, b))
-
+a = make_linked_list_from_list([1])
+b = a
+print(f'a: {a}')
+print(f'b: {b}')
+print('intersection:', sol.getIntersectionNode3(a, b))
+#
+print('--------------')
+#
+a = make_linked_list_from_list([1, 2])
+b = make_linked_list_from_list([2])
+get_by_index(a, 0).next = get_by_index(b, 0)
+print(f'a: {a}')
+print(f'b: {b}')
+print(sol.getIntersectionNode3(a, b))
+#
+print('--------------')
+#
 a = make_linked_list_from_list([2, 6, 4])
 b = make_linked_list_from_list([1, 5])
-print(sol.getIntersectionNode2(a, b))
+print(f'a: {a}')
+print(f'b: {b}')
+print(sol.getIntersectionNode3(a, b))
