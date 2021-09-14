@@ -44,46 +44,9 @@ from tree import TreeNode, init_tree_from_level_array
 
 
 class Solution:
-    def inorderTraversalRecursive(self, root: Optional[TreeNode]) -> List[int]:
-        res = []
-
-        def helper(node: TreeNode):
-            if node is not None:
-                if node.left is not None:
-                    helper(node.left)
-                res.append(node.val)
-                if node.right is not None:
-                    helper(node.right)
-
-        helper(root)
-        return res
-
-    def inorderTraversal2(self, root: Optional[TreeNode]) -> List[int]:
-        res = []
-        stack = []
-        cur_node = root
-
-        while cur_node is not None:
-            print(f'begin outer stack: {stack}, cur_node: {cur_node}')
-            while cur_node.left is not None:
-                stack.append(cur_node)
-                cur_node = cur_node.left
-                print(f'branch left stack: {stack}, cur_node: {cur_node}')
-
-            print(f'append to res: {cur_node.val}')
-            res.append(cur_node.val)
-
-            if cur_node.right is not None:
-                print(f'branch right stack: {stack}, cur_node: {cur_node}')
-                stack.append(cur_node)
-                cur_node = cur_node.right
-
-            cur_node = stack.pop()
-            print(f'stack pop stack: {stack}, cur_node: {cur_node}')
-
-        return res
-
-    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+    # O(n) memory
+    # O(n) speed
+    def inorder_traversal_first_solution(self, root: Optional[TreeNode]) -> List[int]:
         # Note: look at contest_dec_2020/week2/03_bst_inorder_iterator.py
         if root is None:
             return []
@@ -110,6 +73,69 @@ class Solution:
             stack_dir = 'up'
 
         return traverse_path
+
+    # O(n) memory
+    # O(n) speed
+    def inorder_traversal_recursive(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+
+        def helper(node: TreeNode):
+            if node is not None:
+                if node.left is not None:
+                    helper(node.left)
+                res.append(node.val)
+                if node.right is not None:
+                    helper(node.right)
+
+        helper(root)
+        return res
+
+    # O(n) memory
+    # O(n) speed
+    def inorder_traversal_second_solution(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+        stack = []
+        cur_node = root
+        right_dir = False
+
+        while cur_node is not None:
+            while cur_node.left is not None and not right_dir:
+                stack.append(cur_node)
+                cur_node = cur_node.left
+
+            res.append(cur_node.val)
+
+            if cur_node.right is not None:
+                cur_node = cur_node.right
+                right_dir = False
+            else:
+                cur_node = stack.pop() if len(stack) > 0 else None
+                right_dir = True
+
+        return res
+
+    # O(n) memory
+    # O(n) speed
+    def inorder_traversal_third_solution(self, root: Optional[TreeNode]) -> List[int]:
+        res = []
+        stack = []
+        cur_node = root
+
+        while cur_node is not None or len(stack) > 0:
+            while cur_node is not None:
+                stack.append(cur_node)
+                cur_node = cur_node.left
+
+            cur_node = stack.pop()
+            res.append(cur_node.val)
+            cur_node = cur_node.right
+
+        return res
+
+    # O(1) memory
+    # O(n) speed
+    def inorder_traversal_o1_solution(self, root: Optional[TreeNode]) -> List[int]:
+        pass
 
 
 sol = Solution()
