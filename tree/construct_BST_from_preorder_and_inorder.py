@@ -26,6 +26,7 @@ from typing import List, Optional
 from tree import TreeNode
 
 """
+NOTE:
 In the tree/construct_BST_from_preorder.py conditions are relaxed. There should be possible to construct multiple
 trees from inorder array, e.g.:
     inorder array: [3,2,1]
@@ -41,36 +42,78 @@ trees from inorder array, e.g.:
                  3     1
 In this task we have preorder array which narrows down possible solutions
 """
-def build_tree(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
-    # когда в inorder встретим элемент == preorder[0] это будет означать границу левого поддерева
-    root = None
-    cur_node = None
-    cur_chain = None
-    for i, v in enumerate(preorder):
-        print(f'preorder next: {v}')
+def build_tree1(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    head = None
+    tail = None
 
-        if cur_chain is None:
-            cur_chain = TreeNode(v)
-            print(f'initialize cur_chain: {v}')
+    def move_tail(d, v):
+        nonlocal tail, head
+        if tail is None:
+            head = TreeNode(v)
+            tail = head
+        elif d == 'l':
+            tail.left = TreeNode(v)
+            tail = tail.left
+        elif d == 'r':
+            tail.right = TreeNode(v)
+            tail = tail.right
 
-        # нашли самый левый узел
-        if v == inorder[0]:
-            a = TreeNode(v)
-            a.left = cur_chain
-            root = cur_chain
-            print(f'found leftmost node: {v}')
-            break
-        else:
-            if cur_node is not None:
-                print(f'append {v} to {cur_node.val}.left')
-                cur_node.left = TreeNode(v)
-                cur_node = cur_node.left
+    preorder_seen = set()
+    inorder_idx = 0
+    fork = False
+    for v in preorder:
+        print(f'next preorder: {v}, head = {head}, tail = {tail}')
+        if v == inorder[inorder_idx]:
+            print(f'match inorder next {v}')
+            if v in preorder_seen:
+                print(f'seen this element if preorder chain, passing')
+                continue
             else:
-                print(f'initialize cur_node: {v}')
-                cur_node = TreeNode(v)
+                if fork:
+                    print(f'moving tail {tail} to the right {v}')
+                    move_tail('r', v)
+                else:
+                    print(f'moving tail {tail} to the left {v}')
+                    move_tail('l', v)
+                    fork = True
+
+            inorder_idx += 1
+        else:
+            if fork:
+                print(f'moving tail {tail} to the right {v}')
+                move_tail('r', v)
+            else:
+                print(f'moving tail {tail} to the left {v}')
+                move_tail('l', v)
 
 
-    return root
+def build_tree2(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    nodes = dict()
+    prev_node = None
+    inorder_idx = 0
+    move_right = False
+    for v in preorder:
+        node = TreeNode(v)
+        nodes[v] = node
+        if v == inorder[inorder_idx]:
+            print(f'break on {v}')
+            print(f'nodes = {nodes}')
+            while inorder[inorder_idx] in nodes:
+                prev_node = nodes[inorder[inorder_idx]]
+                inorder_idx += 1
+            print(f'prev_node = {prev_node}')
+            print(f'inorder next = {inorder[inorder_idx]}')
+            # break
+        else:
+            if prev_node is not None:
+                if move_right:
+                    prev_node.right = node
+                    move_right = False
+                else:
+                    prev_node.left = node
+
+            prev_node = node
+
 
 """
 
@@ -80,6 +123,9 @@ def build_tree(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
          /  \
        15    7
 
+inorder:  9 3 15 20 7
+preorder: 3 9 20 15 7
+
 """
 
 tr = TreeNode(3)
@@ -88,5 +134,23 @@ tr.right = TreeNode(20)
 tr.right.left = TreeNode(15)
 tr.right.right = TreeNode(7)
 
-print(build_tree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]))
+# print(build_tree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]))
+print(build_tree2([1, 2, 3, 4, 6, 5, 7, 8, 9, 10, 11],
+                  [4, 5, 6, 7, 3, 10, 9, 11, 8, 2, 1]))
+
+
+"""
+
+Свойства inorder порядка для поддерева с корнем root:
+    1) первый элемент - это крайний левый элемент в поддереве
+    2) последний элемент - это root
+    3) следующий за крайним левым элементом - самый нижний элемент, имеющий правое поддерево
+
+Свойства preorder порядка для поддерева с корнем root:
+    1) левая грань дерева начинается с элемента root и заканчивается элементом с left == None
+    2) левая грань дерева заканчивает крайним левым элементом в поддереве
+
+
+
+"""
 

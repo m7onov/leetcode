@@ -7,6 +7,12 @@ class TreeNode:
         self.left = left
         self.right = right
 
+    def to_full_str(self, ident=0):
+        left_str = self.left.to_full_str(ident+1) if self.left is not None else 'None'
+        right_str = self.right.to_full_str(ident+1) if self.right is not None else 'None'
+
+        return str(self.val) + '\n' + (2*ident*' ') + 'left: ' + left_str + '\n' + (2*ident*' ') + 'right: ' + right_str
+
     def __str__(self):
         return str(self.val)
 
