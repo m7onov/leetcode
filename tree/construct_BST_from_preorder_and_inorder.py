@@ -42,105 +42,9 @@ trees from inorder array, e.g.:
                  3     1
 In this task we have preorder array which narrows down possible solutions
 """
-def build_tree1(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
-    head = None
-    tail = None
-
-    def move_tail(d, v):
-        nonlocal tail, head
-        if tail is None:
-            head = TreeNode(v)
-            tail = head
-        elif d == 'l':
-            tail.left = TreeNode(v)
-            tail = tail.left
-        elif d == 'r':
-            tail.right = TreeNode(v)
-            tail = tail.right
-
-    preorder_seen = set()
-    inorder_idx = 0
-    fork = False
-    for v in preorder:
-        print(f'next preorder: {v}, head = {head}, tail = {tail}')
-        if v == inorder[inorder_idx]:
-            print(f'match inorder next {v}')
-            if v in preorder_seen:
-                print(f'seen this element if preorder chain, passing')
-                continue
-            else:
-                if fork:
-                    print(f'moving tail {tail} to the right {v}')
-                    move_tail('r', v)
-                else:
-                    print(f'moving tail {tail} to the left {v}')
-                    move_tail('l', v)
-                    fork = True
-
-            inorder_idx += 1
-        else:
-            if fork:
-                print(f'moving tail {tail} to the right {v}')
-                move_tail('r', v)
-            else:
-                print(f'moving tail {tail} to the left {v}')
-                move_tail('l', v)
-
-
-def build_tree2(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
-    nodes = dict()
-    prev_node = None
-    inorder_idx = 0
-    move_right = False
-    for v in preorder:
-        node = TreeNode(v)
-        nodes[v] = node
-        if v == inorder[inorder_idx]:
-            print(f'break on {v}')
-            print(f'nodes = {nodes}')
-            while inorder[inorder_idx] in nodes:
-                prev_node = nodes[inorder[inorder_idx]]
-                inorder_idx += 1
-            print(f'prev_node = {prev_node}')
-            print(f'inorder next = {inorder[inorder_idx]}')
-            # break
-        else:
-            if prev_node is not None:
-                if move_right:
-                    prev_node.right = node
-                    move_right = False
-                else:
-                    prev_node.left = node
-
-            prev_node = node
-
 
 """
-
-       3
-      /  \
-     9    20
-         /  \
-       15    7
-
-inorder:  9 3 15 20 7
-preorder: 3 9 20 15 7
-
-"""
-
-tr = TreeNode(3)
-tr.left = TreeNode(9)
-tr.right = TreeNode(20)
-tr.right.left = TreeNode(15)
-tr.right.right = TreeNode(7)
-
-# print(build_tree([3, 9, 20, 15, 7], [9, 3, 15, 20, 7]))
-print(build_tree2([1, 2, 3, 4, 6, 5, 7, 8, 9, 10, 11],
-                  [4, 5, 6, 7, 3, 10, 9, 11, 8, 2, 1]))
-
-
-"""
-
+NOTE:
 Свойства inorder порядка для поддерева с корнем root:
     1) первый элемент - это крайний левый элемент в поддереве
     2) последний элемент - это root
@@ -149,8 +53,82 @@ print(build_tree2([1, 2, 3, 4, 6, 5, 7, 8, 9, 10, 11],
 Свойства preorder порядка для поддерева с корнем root:
     1) левая грань дерева начинается с элемента root и заканчивается элементом с left == None
     2) левая грань дерева заканчивает крайним левым элементом в поддереве
-
-
-
 """
 
+
+def build_tree_non_recursive(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    preorder_nodes = {}
+    preorder_chain_start = None
+    preorder_prev_node = None
+    inorder_next_idx = 0
+    inorder_next_val = inorder[inorder_next_idx]
+    inorder_prev_val = None
+
+    # walking through preorder list
+    for preorder_next_val in preorder:
+        preorder_next_node = TreeNode(preorder_next_val)
+        preorder_nodes[preorder_next_val] = preorder_next_node
+
+        # start new chain
+        if preorder_chain_start is None:
+            preorder_chain_start = preorder_next_node
+            # we need to connect new chain to a specific node in previous chain
+            if inorder_prev_val is not None:
+                preorder_nodes[inorder_prev_val].right = preorder_next_node
+                inorder_prev_val = None
+        # or add to existing chain's tail
+        else:
+            if preorder_prev_node is not None:
+                preorder_prev_node.left = preorder_next_node
+
+        # we found chain end
+        if inorder_next_val in preorder_nodes:
+            # forward to next element in inorder list which was not seen in preorder list
+            while inorder_next_val in preorder_nodes:
+                inorder_prev_val = inorder_next_val
+                inorder_next_idx += 1
+                if inorder_next_idx < len(inorder):
+                    inorder_next_val = inorder[inorder_next_idx]
+                else:
+                    inorder_next_val = None
+
+            # reset chain
+            preorder_chain_start = None
+            preorder_prev_node = None
+        else:
+            preorder_prev_node = preorder_next_node
+
+    return preorder_nodes[preorder[0]]
+
+
+def build_tree_recursive(preorder: List[int], inorder: List[int]) -> Optional[TreeNode]:
+    preorder_idx = -1
+
+    def split(inorder_start: int, inorder_end: int):
+        if inorder_start == inorder_end:
+            return None
+
+        nonlocal preorder_idx
+        preorder_idx += 1
+
+        for i in range(inorder_start, inorder_end):
+            if inorder[i] == preorder[preorder_idx]:
+                ret = TreeNode(preorder[preorder_idx])
+                ret.left = split(inorder_start, i)
+                ret.right = split(i + 1, inorder_end)
+                return ret
+
+        raise Exception('unexpected state')
+
+    return split(0, len(inorder))
+
+
+# print(build_tree_recursive([3, 9, 20, 15, 7],
+#                            [9, 3, 15, 20, 7]).to_full_str())
+
+# print(build_tree_recursive([1, 2, 3, 4, 6, 5, 7, 8, 9, 10, 11],
+#                            [4, 5, 6, 7, 3, 10, 9, 11, 8, 2, 1]).to_full_str())
+
+
+print(build_tree_recursive([7, 6, 8, 1, 2, 3, 4, 5],
+                           [6, 1, 8, 2, 7, 4, 3, 5]).to_full_str())
