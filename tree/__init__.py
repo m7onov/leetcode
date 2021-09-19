@@ -34,6 +34,23 @@ class TreeNodeLL:
         self.right = right
         self.next = nx
 
+    def to_full_str(self, ident=2, ident_total=0):
+        left_str = ''
+        if self.left is not None:
+            left_str = ('\n' + ((ident_total + ident) * ' ')
+                        + 'l - ' + self.left.to_full_str(ident, ident_total + ident))
+
+        right_str = ''
+        if self.right is not None:
+            right_str = ('\n' + ((ident_total + ident) * ' ')
+                         + 'r - ' + self.right.to_full_str(ident, ident_total + ident))
+
+        next_str = ''
+        if self.next is not None:
+            next_str = ', n - ' + str(self.next.val)
+
+        return str(self.val) + next_str + left_str + right_str
+
     def __str__(self):
         return str(self.val)
 
