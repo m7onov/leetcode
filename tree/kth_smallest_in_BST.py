@@ -30,4 +30,41 @@ from tree import TreeNode
 
 
 def kth_smallest(root: Optional[TreeNode], k: int) -> int:
-    pass
+    kth_idx = 0
+
+    def visit_inorder(node: TreeNode):
+        nonlocal kth_idx
+
+        if node is None:
+            return None
+
+        ret = visit_inorder(node.left)
+        if ret is not None:
+            return ret
+
+        kth_idx += 1
+        if kth_idx == k:
+            return node.val
+
+        return visit_inorder(node.right)
+
+    return visit_inorder(root)
+
+
+tr = TreeNode(3)
+tr.left = TreeNode(1)
+tr.right = TreeNode(1)
+tr.left.right = TreeNode(2)
+
+res = kth_smallest(tr, 1)
+print(res)
+
+tr = TreeNode(5)
+tr.left = TreeNode(3)
+tr.right = TreeNode(6)
+tr.left.left = TreeNode(2)
+tr.left.right = TreeNode(4)
+tr.left.left.left = TreeNode(1)
+
+res = kth_smallest(tr, 3)
+print(res)
