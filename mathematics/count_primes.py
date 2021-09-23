@@ -21,7 +21,7 @@ Constraints:
 """
 import time
 
-from math import sqrt
+from mathematics import sqrt
 
 
 class Solution:

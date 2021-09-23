@@ -40,68 +40,36 @@ Hello World     13
 Ввод	        Вывод
 APPLE II        10
 """
+import sys
 
 
 def solution(s):
-    def get_reg(c):
+    def if_lowercase(c, y, n, s):
         if 'a' <= c <= 'z':
-            return 'small'
+            return y
         elif 'A' <= c <= 'Z':
-            return 'big'
+            return n
         else:
-            return 'space'
+            return s
 
-    taps = 0
-    reg = 'small'
-    for i, c in enumerate(s):
-        c_reg = get_reg(c)
-        if c_reg != reg and c_reg != 'space':
-            n_reg = get_reg(s[i+1]) if (i + 1) < len(s) else reg
-            if n_reg == c_reg:
-                reg = c_reg
-                taps += 2
-            else:
-                taps += 1
-        taps += 1
-    return taps
-
-
-def solution2(s):
     small = [0] * (len(s) + 1)
     big = [0] * (len(s) + 1)
-    if 'a' <= s[0] <= 'z':
-        small[0] = 0
-    else:
-        big[0] = 2
 
-    for i in range(len(s)):
-        if 'a' <= s[i] <= 'z':
-            small[i+1] = min(small[i] + 1, big[i] + 3)
-            big[i+1] = min(small[i] + 3, big[i] + 2)
-        elif 'A' <= s[i] <= 'Z':
-            small[i+1] = min(big[i] + 3, small[i] + 2)
-            big[i+1] = min(big[i] + 1, small[i] + 3)
-        else:
-            big[i+1] = big[i] + 1
-            small[i+1] = small[i] + 1
+    for i, c in enumerate(s, 1):
+        small[i] = min(small[i-1] + if_lowercase(c, 1, 2, 1),
+                       big[i-1] + if_lowercase(c, 3, 3, 3) if i > 1 else sys.maxsize)
 
-    print('-----------')
-    print(small)
-    print(big)
+        big[i] = min(small[i-1] + if_lowercase(c, 3, 3, 3),
+                     big[i-1] + if_lowercase(c, 2, 1, 1) if i > 1 else sys.maxsize)
 
     return min(small[-1], big[-1])
 
 
 # with open('input.txt') as f:
-#     in_str = f.read()
+#     in_str = f.read().strip('\n')  # !!! strip('\n') - это блять очень важно; 2 дня убил на это !!!
 #
 # res = solution(in_str)
 # print(res)
-#
-# with open('output.txt', 'w+') as f:
-#     f.write(str(res))
 
-print(solution2('Hello World'))
-print(solution2('APPLE II'))
-print(solution2('A'))
-print(solution2(' A'))
+print(solution('Hello World'))
+print(solution('APPLE II'))
