@@ -41,36 +41,6 @@ import random
 from collections import namedtuple
 
 
-def generate_tests(num_tests):
-    tests = []
-    for _ in range(num_tests):
-        can_vals = [random.randint(0, 20) for _ in range(random.randint(1, 15))]
-        res_vals = list(can_vals)
-        for _ in range(15):
-            v = random.random()
-            # interchange 2 elements
-            if v < .33:
-                ti1 = random.randint(0, len(res_vals)-1)
-                ti2 = random.randint(0, len(res_vals)-1)
-                if ti1 != ti2:
-                    tv = res_vals[ti1]
-                    res_vals[ti1] = res_vals[ti2]
-                    res_vals[ti2] = tv
-            # multiply all by something
-            elif v < .66:
-                tv = random.randint(-15, 15)
-                if tv != 0:
-                    res_vals = [i * tv for i in res_vals]
-            # add something to all
-            else:
-                tv = random.randint(-15, 15)
-                res_vals = [i + tv for i in res_vals]
-
-        tests.append((can_vals, res_vals))
-
-    return tests
-
-
 Test = namedtuple('Test', ['can_len', 'can_vals', 'res_len', 'res_vals'])
 
 
@@ -133,15 +103,15 @@ class Solution:
                 else:
                     return False, None
 
-            c = (atest.res_vals[-1] - atest.res_vals[0]) / (atest.can_vals[-1] - atest.can_vals[0])
-            d = (atest.res_vals[0] * atest.can_vals[-1] - atest.can_vals[0] * atest.res_vals[-1]) \
-                / (atest.can_vals[-1] - atest.can_vals[0])
+            v1 = atest.res_vals[-1] - atest.res_vals[0]
+            v2 = atest.can_vals[-1] - atest.can_vals[0]
+            v3 = atest.res_vals[0] * atest.can_vals[-1] - atest.can_vals[0] * atest.res_vals[-1]
 
             for can_val, res_val in zip(atest.can_vals, atest.res_vals):
-                if (can_val * c + d) != res_val:
+                if can_val * v1 + v3 != res_val * v2:
                     return False, None
             else:
-                return True, f'c = {c}, d = {d}'
+                return True, f'v1 = {v1}, v2 = {v2}, v3 = {v3}'
 
         for i, test in enumerate(self.tests):
             if test.can_len != test.res_len:
@@ -173,18 +143,52 @@ class Solution:
 # sol.load_tests_from_file('task_b_input3.txt')
 # sol.solve()
 # print('\n'.join(sol.solutions))
+# print('-------------------')
+sol = Solution()
+sol.load_tests([([-1, 2, 2], [6231453.859508636, 6231453.859508636, 3463540.880245016])])
+sol.solve()
+print('\n'.join(sol.solutions))
 
-while True:
-    test_vals = generate_tests(1000)
-    sol = Solution()
-    sol.load_tests(test_vals)
-    sol.solve()
 
-    is_found = False
-    for test, solution, details in zip(sol.tests, sol.solutions, sol.solutions_detail):
-        if solution != 'YES':
-            print(f'{solution: <4}: {test} [{details}]')
-            is_found = True
+def generate_tests(num_tests):
+    tests = []
+    for _ in range(num_tests):
+        can_vals = [random.randint(-5, 5) for _ in range(random.randint(1, 5))]
+        res_vals = list(can_vals)
+        for _ in range(20):
+            v = random.random()
+            if v < .33:
+                ti1 = random.randint(0, len(res_vals)-1)
+                ti2 = random.randint(0, len(res_vals)-1)
+                if ti1 != ti2:
+                    tv = res_vals[ti1]
+                    res_vals[ti1] = res_vals[ti2]
+                    res_vals[ti2] = tv
+            elif v < .66:
+                tv = 10*random.random()
+                if tv != 0:
+                    res_vals = [i * tv for i in res_vals]
+            else:
+                tv = 10*random.random()
+                res_vals = [i + tv for i in res_vals]
+        tests.append((can_vals, res_vals))
+    return tests
 
-    if is_found:
-        break
+
+def random_tests():
+    while True:
+        test_vals = generate_tests(10)
+        sol = Solution()
+        sol.load_tests(test_vals)
+        sol.solve()
+        is_found = False
+        for test, solution, details in zip(sol.tests, sol.solutions, sol.solutions_detail):
+            if solution != 'YES':
+                print(f'{solution: <4}: {test} [{details}]')
+                is_found = True
+
+        if is_found:
+            break
+
+
+# random_tests()
