@@ -84,34 +84,54 @@ class Solution:
 
     def solve(self):
         def try_solution(atest, asc=True):
-            atest.can_vals.sort()
-            if asc:
-                atest.res_vals.sort()
-            else:
-                atest.res_vals.sort(reverse=True)
+            # can_vals = sorted(atest.can_vals)
+            # if asc:
+            #     res_vals = sorted(atest.res_vals)
+            # else:
+            #     res_vals = sorted(atest.res_vals, reverse=True)
 
-            if atest.res_vals[-1] == atest.res_vals[0] or atest.can_vals[-1] == atest.can_vals[0]:
-                if atest.res_vals[0] == atest.can_vals[0]:
-                    return True, 'trivial'
-                elif atest.can_vals[0] * atest.res_vals[0] == 0:
-                    if atest.can_vals[0] == atest.can_vals[-1] and atest.res_vals[0] == atest.res_vals[-1]:
-                        return True, 'trivial'
-                    else:
-                        return False, None
-                elif test.res_vals[-1] * atest.can_vals[1] == atest.res_vals[0] * atest.can_vals[-1]:
+            can_vals = sorted(atest.can_vals)
+            res_vals = sorted(atest.res_vals)
+            if not asc:
+                can_vals = [-cv for cv in reversed(can_vals)]
+
+            # if res_vals[-1] == res_vals[0] or can_vals[-1] == can_vals[0]:
+            #     if res_vals[0] == can_vals[0]:
+            #         return True, 'trivial'
+            #     elif can_vals[0] * res_vals[0] == 0:
+            #         if can_vals[0] == can_vals[-1] and res_vals[0] == res_vals[-1]:
+            #             return True, 'trivial'
+            #         else:
+            #             return False, None
+            #     elif res_vals[-1] * can_vals[1] == res_vals[0] * can_vals[-1]:
+            #         return True, 'trivial'
+            #     else:
+            #         return False, None
+
+            if can_vals[-1] == can_vals[0]:
+                if res_vals[-1] == res_vals[-1]:
                     return True, 'trivial'
                 else:
                     return False, None
+            elif res_vals[-1] == res_vals[0]:
+                return False, None
 
-            v1 = atest.res_vals[-1] - atest.res_vals[0]
-            v2 = atest.can_vals[-1] - atest.can_vals[0]
-            v3 = atest.res_vals[0] * atest.can_vals[-1] - atest.can_vals[0] * atest.res_vals[-1]
+            # v1 = res_vals[-1] - res_vals[0]
+            # v2 = can_vals[-1] - can_vals[0]
+            # v3 = res_vals[0] * can_vals[-1] - can_vals[0] * res_vals[-1]
 
-            for can_val, res_val in zip(atest.can_vals, atest.res_vals):
-                if can_val * v1 + v3 != res_val * v2:
+            # for can_val, res_val in zip(can_vals, res_vals):
+            #     if can_val * v1 + v3 != res_val * v2:
+            #         return False, None
+            # else:
+            #     return True, f'v1 = {v1}, v2 = {v2}, v3 = {v3}'
+
+            diff_can = can_vals[-1] - can_vals[0]
+            diff_res = res_vals[-1] - res_vals[0]
+            for can_val, res_val in zip(can_vals, res_vals):
+                if (can_val - can_vals[0]) * diff_res != (res_val - res_vals[0]) * diff_can:
                     return False, None
-            else:
-                return True, f'v1 = {v1}, v2 = {v2}, v3 = {v3}'
+            return True, None
 
         for i, test in enumerate(self.tests):
             if test.can_len != test.res_len:
@@ -119,63 +139,92 @@ class Solution:
             elif test.can_len < 2:
                 self.add_solution('YES', 'trivial')
             else:
-                is_valid, details = try_solution(test, True)
-                if not is_valid:
-                    is_valid, details = try_solution(test, False)
 
-                if is_valid:
-                    self.add_solution('YES', details)
-                else:
+                # ----->>
+                can_vals = sorted(test.can_vals)
+                res_vals = sorted(test.res_vals)
+                if can_vals[0] == can_vals[-1]:
+                    if res_vals[0] == res_vals[-1]:
+                        self.add_solution('YES')
+                    else:
+                        self.add_solution('NO')
+                elif res_vals[0] == res_vals[-1]:
                     self.add_solution('NO')
+                else:
+                    def check(a, b):
+                        diff_a = a[-1] - a[0]
+                        diff_b = b[-1] - b[0]
+                        for i, j in zip(a, b):
+                            if (i - a[0]) * diff_b != (j - b[0]) * diff_a:
+                                return False
+                        return True
+
+                    can_vals_neg = [-i for i in reversed(can_vals)]
+                    if check(can_vals, res_vals) or check(can_vals_neg, res_vals):
+                        self.add_solution('YES')
+                    else:
+                        self.add_solution('NO')
+                # <<-----
+
+                # is_valid, details = try_solution(test, True)
+                # if not is_valid:
+                #     is_valid, details = try_solution(test, False)
+                #
+                # if is_valid:
+                #     self.add_solution('YES', details)
+                # else:
+                #     self.add_solution('NO')
 
 
-# sol = Solution()
-# sol.load_tests_from_file('task_b_input1.txt')
-# sol.solve()
-# print('\n'.join(sol.solutions))
-# print('-------------------')
-# sol = Solution()
-# sol.load_tests_from_file('task_b_input2.txt')
-# sol.solve()
-# print('\n'.join(sol.solutions))
-# print('-------------------')
-# sol = Solution()
-# sol.load_tests_from_file('task_b_input3.txt')
-# sol.solve()
-# print('\n'.join(sol.solutions))
-# print('-------------------')
-sol = Solution()
-sol.load_tests([([-1, 2, 2], [6231453.859508636, 6231453.859508636, 3463540.880245016])])
-sol.solve()
-print('\n'.join(sol.solutions))
+def release_tests():
+    sol = Solution()
+    sol.load_tests_from_file('task_b_input1.txt')
+    sol.solve()
+    print('\n'.join(sol.solutions))
+    print('-------------------')
+    sol = Solution()
+    sol.load_tests_from_file('task_b_input2.txt')
+    sol.solve()
+    print('\n'.join(sol.solutions))
+    print('-------------------')
+    sol = Solution()
+    sol.load_tests_from_file('task_b_input3.txt')
+    sol.solve()
+    print('\n'.join(sol.solutions))
 
 
-def generate_tests(num_tests):
-    tests = []
-    for _ in range(num_tests):
-        can_vals = [random.randint(-5, 5) for _ in range(random.randint(1, 5))]
-        res_vals = list(can_vals)
-        for _ in range(20):
-            v = random.random()
-            if v < .33:
-                ti1 = random.randint(0, len(res_vals)-1)
-                ti2 = random.randint(0, len(res_vals)-1)
-                if ti1 != ti2:
-                    tv = res_vals[ti1]
-                    res_vals[ti1] = res_vals[ti2]
-                    res_vals[ti2] = tv
-            elif v < .66:
-                tv = 10*random.random()
-                if tv != 0:
-                    res_vals = [i * tv for i in res_vals]
-            else:
-                tv = 10*random.random()
-                res_vals = [i + tv for i in res_vals]
-        tests.append((can_vals, res_vals))
-    return tests
+def release():
+    sol = Solution()
+    sol.load_tests_from_file('input.txt')
+    sol.solve()
+    print('\n'.join(sol.solutions))
 
 
 def random_tests():
+    def generate_tests(num_tests):
+        tests = []
+        for _ in range(num_tests):
+            can_vals = [random.randint(-5, 5) for _ in range(random.randint(1, 5))]
+            res_vals = list(can_vals)
+            for _ in range(20):
+                v = random.random()
+                if v < .33:
+                    ti1 = random.randint(0, len(res_vals) - 1)
+                    ti2 = random.randint(0, len(res_vals) - 1)
+                    if ti1 != ti2:
+                        tv = res_vals[ti1]
+                        res_vals[ti1] = res_vals[ti2]
+                        res_vals[ti2] = tv
+                elif v < .66:
+                    tv = random.randint(0, 1000)
+                    if tv != 0:
+                        res_vals = [i * tv for i in res_vals]
+                else:
+                    tv = 10 * random.randint(0, 1000)
+                    res_vals = [i + tv for i in res_vals]
+            tests.append((can_vals, res_vals))
+        return tests
+
     while True:
         test_vals = generate_tests(10)
         sol = Solution()
@@ -191,4 +240,14 @@ def random_tests():
             break
 
 
+def specific_tests():
+    sol = Solution()
+    sol.load_tests([([-1, 2, 2], [6231453.859508636, 6231453.859508636, 3463540.880245016])])
+    sol.solve()
+    print('\n'.join(sol.solutions))
+
+
 # random_tests()
+# specific_tests()
+release_tests()
+# release()
