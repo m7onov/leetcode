@@ -28,20 +28,86 @@ Constraints:
 from typing import List
 
 
-class Solution:
-    def letter_combinations(self, digits: str) -> List[str]:
-        digit2letter = {
-            '2': ['a', 'b', 'c'],
-            '3': ['d', 'e', 'f'],
-            '4': ['g', 'h', 'i'],
-            '5': ['j', 'k', 'l'],
-            '6': ['m', 'n', 'o'],
-            '7': ['p', 'q', 'r', 's'],
-            '8': ['t', 'u', 'v'],
-            '9': ['w', 'x', 'y', 'z'],
-        }
+def letter_combinations(digits: str) -> List[str]:
+    digit2letters = {
+        '2': ['a', 'b', 'c'],
+        '3': ['d', 'e', 'f'],
+        '4': ['g', 'h', 'i'],
+        '5': ['j', 'k', 'l'],
+        '6': ['m', 'n', 'o'],
+        '7': ['p', 'q', 'r', 's'],
+        '8': ['t', 'u', 'v'],
+        '9': ['w', 'x', 'y', 'z'],
+    }
 
+    result = []
+    counters = [0] * len(digits)
+    the_end = not len(counters) > 0
+    while not the_end:
         res = []
-        stack = []
-        for d in digits:
-            pass
+        for i, d in enumerate(digits):
+            res.append(digit2letters[d][counters[i]])
+
+        result.append(''.join(res))
+
+        # increase counters
+        for i, d in enumerate(digits):
+            if counters[i] >= len(digit2letters[d]) - 1:
+                counters[i] = 0
+            else:
+                counters[i] += 1
+                break
+        else:
+            the_end = True
+
+    return result
+
+
+def letter_combinations_recursive(digits: str) -> List[str]:
+    digit2letters = {
+        '2': ['a', 'b', 'c'],
+        '3': ['d', 'e', 'f'],
+        '4': ['g', 'h', 'i'],
+        '5': ['j', 'k', 'l'],
+        '6': ['m', 'n', 'o'],
+        '7': ['p', 'q', 'r', 's'],
+        '8': ['t', 'u', 'v'],
+        '9': ['w', 'x', 'y', 'z'],
+    }
+
+    result = []
+
+    def iterate_and_recurse(digit_idx, path):
+        if digit_idx == len(digits):
+            if len(path) > 0:
+                result.append(''.join(path))
+            return
+        for letter in digit2letters[digits[digit_idx]]:
+            path.append(letter)
+            iterate_and_recurse(digit_idx+1, path)
+            path.pop()
+
+    iterate_and_recurse(0, [])
+    return result
+
+
+def tests():
+    res = letter_combinations('23')
+    print(sorted(res))
+    res = letter_combinations('')
+    print(sorted(res))
+    res = letter_combinations('2')
+    print(sorted(res))
+
+
+def tests_recursive():
+    res = letter_combinations_recursive('23')
+    print(sorted(res))
+    res = letter_combinations_recursive('')
+    print(sorted(res))
+    res = letter_combinations_recursive('2')
+    print(sorted(res))
+
+
+# tests()
+tests_recursive()
