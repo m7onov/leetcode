@@ -25,4 +25,45 @@ from typing import List
 
 class Solution:
     def permute(self, nums: List[int]) -> List[List[int]]:
-        pass
+        if len(nums) == 1:
+            return [nums]
+
+        result = []
+        for i in range(len(nums)):
+            v = nums.pop(i)
+            for p in self.permute(nums):
+                result.append([v] + p)
+            nums.insert(i, v)
+
+        return result
+
+
+class Solution2:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        result = []
+
+        def backtrack(from_idx):
+            if from_idx == len(nums) - 1:
+                return result.append(nums.copy())
+            for i in range(from_idx, len(nums)):
+                nums[from_idx], nums[i] = nums[i], nums[from_idx]
+                backtrack(from_idx + 1)
+                nums[from_idx], nums[i] = nums[i], nums[from_idx]
+
+        backtrack(0)
+        return result
+
+
+def tests():
+    sol = Solution2()
+    res = sol.permute([1, 2, 3])
+    print(res)
+    res = sol.permute([0, 1])
+    print(res)
+    res = sol.permute([1])
+    print(res)
+    res = sol.permute([1, 2, 3, 4])
+    print(res)
+
+
+tests()
