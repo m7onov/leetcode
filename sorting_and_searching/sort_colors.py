@@ -30,11 +30,28 @@ Constraints:
 Follow up: Could you come up with a one-pass algorithm using only constant extra space?
 """
 from typing import List
+"""
+The problem is known as Dutch National Flag Problem:
+https://en.wikipedia.org/wiki/Dutch_national_flag_problem
+"""
 
 
 class Solution:
     def sort_colors(self, nums: List[int]) -> None:
-        pass
+        a_idx = 0
+        z_idx = len(nums) - 1
+        idx = a_idx
+        while idx <= z_idx:
+            if nums[idx] == 0:
+                nums[a_idx], nums[idx] = nums[idx], nums[a_idx]
+                a_idx += 1
+            elif nums[idx] == 2:
+                nums[z_idx], nums[idx] = nums[idx], nums[z_idx]
+                z_idx -= 1
+                # the element at idx position may be zero, so we must try one more time
+                # before we increment idx
+                continue
+            idx += 1
 
 
 def tests():
@@ -42,3 +59,18 @@ def tests():
     inp = [2, 0, 2, 1, 1, 0]
     sol.sort_colors(inp)
     print(inp)
+
+    inp = [2, 0, 1]
+    sol.sort_colors(inp)
+    print(inp)
+
+    inp = [0]
+    sol.sort_colors(inp)
+    print(inp)
+
+    inp = [1]
+    sol.sort_colors(inp)
+    print(inp)
+
+
+tests()
