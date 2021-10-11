@@ -25,35 +25,47 @@ from collections import defaultdict, deque
 
 class Solution:
     def top_k_frequent(self, nums: List[int], k: int) -> List[int]:
+        max_freq = 0
         freqs = defaultdict(int)
         for n in nums:
             freqs[n] += 1
+            if freqs[n] > max_freq:
+                max_freq = freqs[n]
 
+        print(f'k = {k}, freqs = {dict(freqs)}, max_freq = {max_freq}, k / len(nums) = {k / len(nums)}')
+
+        result = []
         for n, f in freqs.items():
-            pass
+            print(f'{n:<2}: f / max_freq = {f / max_freq},    f / len(nums) = {f / len(nums)}')
+            if f / max_freq >= k / len(freqs):
+                result.append(n)
 
-        return []
-        # top_freqs = deque()
-        # for n, f in freqs.items():
-        #     if len(top_freqs) < k:
-        #         if f > top_freqs[0][1]:
-        #             top_freqs.appendleft((n, f))
-        #     if len(top_freqs) > k:
-        #         top_freqs.pop()
-        #
-        # return [n for n, f in top_freqs]
+        return result
 
 
 def tests():
     sol = Solution()
-    # res = sol.top_k_frequent([1, 1, 1, 2, 2, 3], 2)
-    # print(res)
-    #
-    # res = sol.top_k_frequent([1], 1)
-    # print(res)
-
+    # 1, 2
+    res = sol.top_k_frequent([1, 1, 1, 2, 2, 3], 2)
+    print(res)
+    print('-----------')
+    # 1
+    res = sol.top_k_frequent([1], 1)
+    print(res)
+    print('-----------')
+    # -1, 2
     res = sol.top_k_frequent([4, 1, -1, 2, -1, 2, 3], 2)
     print(res)
+    print('-----------')
+    # 1, 2
+    res = sol.top_k_frequent([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], 2)
+    print(res)
+    print('-----------')
+    # 1, 2
+    res = sol.top_k_frequent([1, 2, 2, 3, 3, 3, 4, 4, 4, 4], 4)
+    print(res)
+    print('-----------')
 
 
 tests()
+
