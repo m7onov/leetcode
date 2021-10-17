@@ -70,9 +70,9 @@ class SolutionQuickSelect:
             if pivot_true_idx == req_len:
                 return
             elif pivot_true_idx < req_len:
-                quickselect(pivot_true_idx, stop_idx, req_len)
+                quickselect(pivot_true_idx + 1, stop_idx, req_len)
             else:
-                quickselect(start_idx, pivot_true_idx, req_len)
+                quickselect(start_idx, pivot_true_idx - 1, req_len)
 
         quickselect(0, ln - 1, ln - k)
         return keys[ln-k:]

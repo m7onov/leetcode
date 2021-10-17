@@ -57,23 +57,15 @@ class Solution:
             nums[store_idx], nums[stop_idx] = nums[stop_idx], nums[store_idx]
             return store_idx
 
-        def quicksort(start_idx, stop_idx, req_idx):
+        def quickselect(start_idx, stop_idx, req_idx):
             pivot_idx = random.randint(start_idx, stop_idx)
             pivot_true_idx = partition(start_idx, stop_idx, pivot_idx)
-
-            for i in range(pivot_true_idx, stop_idx + 1):
-                if nums[i] != nums[pivot_true_idx]:
-                    break
-                elif i == req_idx:
-                    return
-
-            print(f'start_idx = {start_idx}, stop_idx = {stop_idx}, pivot_idx = {pivot_idx}, pivot_true_idx = {pivot_true_idx}, req_idx = {req_idx}, nums = {nums}')
             if pivot_true_idx < req_idx:
-                quicksort(pivot_true_idx, stop_idx, req_idx)
+                quickselect(pivot_true_idx + 1, stop_idx, req_idx)
             elif pivot_true_idx > req_idx:
-                quicksort(start_idx, pivot_true_idx, req_idx)
+                quickselect(start_idx, pivot_true_idx - 1, req_idx)
 
-        quicksort(0, len(nums) - 1, len(nums) - k)
+        quickselect(0, len(nums) - 1, len(nums) - k)
         return nums[-k]
 
 
