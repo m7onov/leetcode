@@ -17,8 +17,33 @@ Constraints:
 0 <= start_i < end_i <= 10^6
 """
 from typing import List
+import heapq
 
 
 class Solution:
     def min_neeting_rooms(self, intervals: List[List[int]]) -> int:
-        pass
+        intervals.sort(key=lambda x: x[0])
+        rooms_counter = 0
+        heap = []
+        for i in intervals:
+            if len(heap) == 0:
+                heapq.heappush(heap, i[1])
+                rooms_counter += 1
+            else:
+                if i[0] < heap[0]:
+                    heapq.heappush(heap, i[1])
+                    rooms_counter += 1
+                else:
+                    heapq.heapreplace(heap, i[1])
+        return rooms_counter
+
+
+def tests():
+    sol = Solution()
+    res = sol.min_neeting_rooms([[0, 30], [5, 10], [15, 20]])
+    print(res)
+    res = sol.min_neeting_rooms([[7, 10], [2, 4]])
+    print(res)
+
+
+tests()
