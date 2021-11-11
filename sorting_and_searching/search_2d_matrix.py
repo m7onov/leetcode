@@ -129,18 +129,32 @@ class Solution:
 
         return search_recursive(0, num_rows - 1, 0, num_cols - 1)
 
-    def searh_matrix_3(self, matrix: List[List[int]], target: int) -> bool:
-        # TODO: search space reduction
-        pass
+    def search_matrix_3(self, matrix: List[List[int]], target: int) -> bool:
+        # search space reduction
+        num_rows = len(matrix)
+        num_cols = len(matrix[0])
+        i = num_rows - 1
+        j = 0
+        while i >= 0 and j < num_cols:
+            if matrix[i][j] < target:
+                j += 1
+            elif matrix[i][j] > target:
+                i -= 1
+            else:
+                return True
+
+        return False
 
 
 def tests():
     sol = Solution()
-    res = sol.search_matrix_2([[1,   4,  7, 11, 15],
+    res = sol.search_matrix_3([[1,   4,  7, 11, 15],
                                [2,   5,  8, 12, 19],
                                [3,   6,  9, 16, 22],
                                [10, 13, 14, 17, 24],
-                               [18, 21, 23, 26, 30]], 5)
+                               [18, 21, 23, 26, 30]], 16)
+    print(res)
+    res = sol.search_matrix_3([[-5]], -10)
     print(res)
 
 
