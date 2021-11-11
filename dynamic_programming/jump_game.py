@@ -27,4 +27,27 @@ from typing import List
 
 class Solution:
     def can_jump(self, nums: List[int]) -> bool:
-        pass
+        nums_len = len(nums)
+        if nums_len == 1:
+            return True
+
+        max_i = 0
+        for i in range(nums_len - 1):
+            max_i = max(max_i, i + nums[i])
+            if max_i >= nums_len - 1:
+                return True
+            if max_i <= i:
+                return False
+
+        return False
+
+
+def tests():
+    sol = Solution()
+    res = sol.can_jump([2, 3, 1, 1, 4])
+    print(res)
+    res = sol.can_jump([3, 2, 1, 0, 4])
+    print(res)
+
+
+tests()
