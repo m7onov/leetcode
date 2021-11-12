@@ -26,7 +26,7 @@ from typing import List
 
 
 class Solution:
-    def can_jump(self, nums: List[int]) -> bool:
+    def can_jump_1(self, nums: List[int]) -> bool:
         nums_len = len(nums)
         if nums_len == 1:
             return True
@@ -41,12 +41,29 @@ class Solution:
 
         return False
 
+    def can_jump_2(self, nums: List[int]) -> bool:
+        nums_len = len(nums)
+        end_idx = nums_len - 1
+        memo_table = ['U'] * nums_len
+        memo_table[-1] = 'G'
+        for i in range(end_idx - 1, -1, -1):
+            if memo_table[i] == 'U':
+                for j in range(i + 1, min(i + 1 + nums[i], nums_len)):
+                    if memo_table[j] == 'G':
+                        memo_table[i] = 'G'
+                        break
+                else:
+                    memo_table[i] = 'B'
+
+        print(f'memo_table = {memo_table}')
+        return memo_table[0] == 'G'
+
 
 def tests():
     sol = Solution()
-    res = sol.can_jump([2, 3, 1, 1, 4])
+    res = sol.can_jump_2([2, 3, 1, 1, 4])
     print(res)
-    res = sol.can_jump([3, 2, 1, 0, 4])
+    res = sol.can_jump_2([3, 2, 1, 0, 4])
     print(res)
 
 
