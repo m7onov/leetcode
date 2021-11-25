@@ -23,7 +23,7 @@ Constraints:
 1 <= time[i] <= 500
 """
 from typing import List
-from mathematics import factorial
+from math import factorial
 from collections import defaultdict
 
 
