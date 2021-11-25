@@ -32,18 +32,12 @@ class Solution:
     def length_of_lis_0(self, nums: List[int]) -> int:
         nums_len = len(nums)
         lens = [0] * nums_len
-
         for i in range(nums_len):
-            # ищем среди предыдщих элемент:
-            #   а) меньше, чем текущий
-            #   б) с максимальным значением lens[x]
             max_len = 0
             for j in range(i - 1, -1, -1):
                 if nums[j] < nums[i]:
                     max_len = max(max_len, lens[j])
             lens[i] = max_len + 1
-
-        print(lens)
         return max(lens)
 
     # attempt of slight optimization by storing previous links
