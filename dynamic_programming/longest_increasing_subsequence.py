@@ -26,6 +26,7 @@ Constraints:
 Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
 """
 from typing import List, Optional
+import bisect
 
 
 class Solution:
@@ -42,20 +43,26 @@ class Solution:
 
     # attempt of slight optimization by storing previous links
     def length_of_lis_1(self, nums: List[int]) -> int:
-        indexes = [i for i in range(len(nums))]
-        nums_sorted = sorted(indexes, key=lambda i: nums[i])
-        print(nums_sorted)
-        return 0
+        pseq = []
+        for n in nums:
+            idx = bisect.bisect_left(pseq, n)
+            if idx < len(pseq):
+                pseq[idx] = n
+            else:
+                pseq.append(n)
+
+        # TODO: find out the real subsequence from pseq
+        return len(pseq)
 
 
 def tests():
     sol = Solution()
-    # res = sol.length_of_lis_1([10, 9, 2, 5, 3, 7, 101, 18])
-    # print(res)
-    # res = sol.length_of_lis_1([1, 50, 100, 20, 21, 22, 23])
-    # print(res)
-    # res = sol.length_of_lis_1([0, 1, 0, 3, 2, 3])
-    # print(res)
+    res = sol.length_of_lis_1([10, 9, 2, 5, 3, 7, 101, 18])
+    print(res)
+    res = sol.length_of_lis_1([1, 50, 100, 20, 21, 22, 23])
+    print(res)
+    res = sol.length_of_lis_1([0, 1, 0, 3, 2, 3])
+    print(res)
     res = sol.length_of_lis_1([1, 3, 6, 7, 9, 4, 10, 5, 6])
     print(res)
 
