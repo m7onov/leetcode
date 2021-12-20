@@ -60,6 +60,10 @@ class Solution:
         def quickselect(start_idx, stop_idx, req_idx):
             pivot_idx = random.randint(start_idx, stop_idx)
             pivot_true_idx = partition(start_idx, stop_idx, pivot_idx)
+
+            # some optimization possible for "all-the-same-value" array
+            # see others/majority_element.py
+
             if pivot_true_idx < req_idx:
                 quickselect(pivot_true_idx + 1, stop_idx, req_idx)
             elif pivot_true_idx > req_idx:

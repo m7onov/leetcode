@@ -53,15 +53,21 @@ class Solution:
         hot_tasks = []
         heapq.heapify(hot_tasks)
         while len(tasks_heap) > 0 or len(hot_tasks) > 0:
+            print('------------------------------------------------')
+            print(f'hot_tasks = {hot_tasks}, tasks_heap = {tasks_heap}')
             if len(tasks_heap) > 0:
                 counter, task = heapq.heappop(tasks_heap)
                 counter += 1
                 if counter < 0:
+                    print(f'add task {task} to hot_tasks')
                     heapq.heappush(hot_tasks, (len(path), task, counter))
                 path.append(task)
 
             else:
+                print(f'no cool tasks')
                 path.append('-')
+
+            print(f'hot_tasks = {hot_tasks}, tasks_heap = {tasks_heap}')
 
             while len(hot_tasks) > 0 and len(path) > hot_tasks[0][0] + n:
                 _, task, counter = heapq.heappop(hot_tasks)
@@ -92,6 +98,21 @@ def tests():
     res = sol.least_interval_2(['A', 'A', 'A', 'B', 'B', 'B'], 0)
     print(res)
     res = sol.least_interval_2(['A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G'], 2)
+    # res = sol.least_interval_4(['A', 'A', 'A', 'B', 'B', 'B'], 2)
+    # print(f'8 = {res}')
+    # res = sol.least_interval_4(['A', 'A', 'A', 'B', 'B', 'B'], 0)
+    # print(f'6 = {res}')
+    # res = sol.least_interval_4(['A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G'], 2)
+    # print(f'16 = {res}')
+    # res = sol.least_interval_4(['A', 'A', 'A', 'B', 'B', 'B', 'C', 'C', 'C', 'D', 'D', 'E'], 2)
+    # print(f'12 = {res}')
+
+    # res = sol.least_interval_4(['A'] * 6 + ['B'] * 4 + ['C'] * 3 + ['D'] * 2 + ['E'] * 2 + ['G'] * 2, 2)
+    # print(res)
+    # res = sol.least_interval_5(['A'] * 6 + ['B'] * 4 + ['C'] * 3 + ['D'] * 2 + ['E'] * 2 + ['G'] * 2, 2)
+    # print(res)
+
+    res = sol.least_interval_4(['A'] * 3 + ['B'] * 3 + ['C'] * 3 + ['D'] * 3, 4)
     print(res)
 
 
