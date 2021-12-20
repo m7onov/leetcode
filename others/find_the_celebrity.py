@@ -40,12 +40,66 @@ graph[i][i] == 1
 Follow up: If the maximum number of allowed calls to the API knows is 3 * n, could you find a solution
 without exceeding the maximum number of calls?
 """
+import random
 
 
 # The knows API is already defined for you.
 # return a bool, whether a knows b
 # def knows(a: int, b: int) -> bool:
 
+
+def generate_graph(n, has_celebrity=True):
+    graph = [[random.randint(0, 1) for _ in range(n)] for _ in range(n)]
+    celebrity_idx = None
+    if has_celebrity:
+        celebrity_idx = random.randint(0, n)
+        for row in range(n):
+            for col in range(n):
+                if row == celebrity_idx:
+                    graph[row][col] = 0
+                if col == celebrity_idx:
+                    graph[row][col] = 1
+
+    celebrity_cols = set([i for i in range(n)])
+    celebrity_rows = set([i for i in range(n)])
+    for row in range(n):
+        for col in range(n):
+            if graph[row][col] == 1 and row != col:
+                celebrity_rows.discard(row)
+            if graph[row][col] == 0:
+                celebrity_cols.discard(col)
+
+    for celebrity_row in celebrity_rows:
+        if celebrity_row != celebrity_idx:
+            set_col_idx = random.randint(0, n - 1)
+            if set_col_idx >= celebrity_row:
+                set_col_idx += 1
+            graph[celebrity_row][set_col_idx] = 1
+
+    for i in range(n):
+        graph[i][i] = 1
+
+    return graph, celebrity_idx
+
+
 class Solution:
+    def __init__(self, graph):
+        self.graph = graph
+
+    def knows(self, a: int, b: int):
+        return self.graph[a][b] == 1
+
     def find_celebrity(self, n: int) -> int:
         pass
+
+
+def tests():
+    graph, celebrity_idx = generate_graph(10)
+    print('\n'.join([str(row) for row in graph]))
+    print(f'celebrity_idx = {celebrity_idx}')
+    sol = Solution(graph)
+    res = sol.find_celebrity(10)
+    print(res)
+
+
+tests()
