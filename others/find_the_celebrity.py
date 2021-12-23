@@ -52,7 +52,7 @@ def generate_graph(n, has_celebrity=True):
     graph = [[random.randint(0, 1) for _ in range(n)] for _ in range(n)]
     celebrity_idx = None
     if has_celebrity:
-        celebrity_idx = random.randint(0, n)
+        celebrity_idx = random.randint(0, n - 1)
         for row in range(n):
             for col in range(n):
                 if row == celebrity_idx:
@@ -85,21 +85,82 @@ def generate_graph(n, has_celebrity=True):
 class Solution:
     def __init__(self, graph):
         self.graph = graph
+        self.knows_counter = 0
 
     def knows(self, a: int, b: int):
+        self.knows_counter += 1
         return self.graph[a][b] == 1
 
-    def find_celebrity(self, n: int) -> int:
+    def find_celebrity_1(self, n: int) -> int:
+        def shrink_candidates(candidates: set):
+            base_candidate = None
+            exclude_candidates = set()
+            for j in candidates:
+                if base_candidate is None:
+                    base_candidate = j
+                else:
+                    if not self.knows(base_candidate, j) or self.knows(j, base_candidate):
+                        exclude_candidates.add(j)
+            if len(exclude_candidates) == 0:
+                candidates.discard(base_candidate)
+                return candidates
+            else:
+                return candidates - exclude_candidates
+
+        celeb_candidates = set(i for i in range(n))
+        while len(celeb_candidates) > 1:
+            print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
+            celeb_candidates = shrink_candidates(celeb_candidates)
+
+        final_candidate = celeb_candidates.pop()
+        for i in range(n):
+            if i != final_candidate:
+                if self.knows(final_candidate, i) or not self.knows(i, final_candidate):
+                    return -1
+
+        print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
+        return final_candidate
+
+    def find_celebrity_2(self, n: int) -> int:
         pass
 
 
-def tests():
-    graph, celebrity_idx = generate_graph(10)
+def test():
+    # graph, celebrity_idx = generate_graph(10)
+    celebrity_idx = 9
+    graph = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+    ]
     print('\n'.join([str(row) for row in graph]))
     print(f'celebrity_idx = {celebrity_idx}')
     sol = Solution(graph)
-    res = sol.find_celebrity(10)
+    res = sol.find_celebrity_1(10)
     print(res)
+    # if res != celebrity_idx:
+    #     raise Exception('error', '\n'.join([str(row) for row in graph]))
+    return sol.knows_counter
 
 
-tests()
+print(test())
+
+# num_counters = 0
+# max_counter = 0
+# sum_counter = 0
+# for _ in range(1000):
+#     counter = test()
+#     if counter > max_counter:
+#         max_counter = counter
+#     sum_counter += counter
+#     num_counters += 1
+#
+# print(max_counter)
+# print(sum_counter / num_counters)
