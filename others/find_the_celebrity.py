@@ -41,6 +41,7 @@ Follow up: If the maximum number of allowed calls to the API knows is 3 * n, cou
 without exceeding the maximum number of calls?
 """
 import random
+from collections import defaultdict
 
 
 # The knows API is already defined for you.
@@ -108,9 +109,10 @@ class Solution:
                 return candidates - exclude_candidates
 
         celeb_candidates = set(i for i in range(n))
+        print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
         while len(celeb_candidates) > 1:
-            print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
             celeb_candidates = shrink_candidates(celeb_candidates)
+            print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
 
         final_candidate = celeb_candidates.pop()
         for i in range(n):
@@ -122,45 +124,115 @@ class Solution:
         return final_candidate
 
     def find_celebrity_2(self, n: int) -> int:
-        pass
+        cache = dict()
+
+        def x_knows(a, b) -> bool:
+            if (a, b) not in cache:
+                cache[a, b] = self.knows(a, b) == 1
+            return cache[a, b]
+
+        def shrink_candidates(candidates: set):
+            exclude_candidates = set()
+            base_candidate = next(iter(candidates))
+            for j in candidates.difference({base_candidate}):
+                if not x_knows(base_candidate, j):
+                    exclude_candidates.add(j)
+                else:
+                    return candidates - exclude_candidates - {base_candidate}
+            return candidates - exclude_candidates
+
+        celeb_candidates = set(i for i in range(n))
+        # print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
+        while len(celeb_candidates) > 1:
+            celeb_candidates = shrink_candidates(celeb_candidates)
+            # print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
+
+        final_candidate = celeb_candidates.pop()
+        for i in range(n):
+            if i != final_candidate:
+                if not x_knows(i, final_candidate) or x_knows(final_candidate, i):
+                    return -1
+
+        # print(f'celeb_candidates = {celeb_candidates}, knows_counter = {self.knows_counter}')
+        return final_candidate
+
+    def find_celebrity_3(self, n: int) -> int:
+        cache = dict()
+
+        def x_knows(a, b) -> bool:
+            if (a, b) not in cache:
+                cache[a, b] = self.knows(a, b) == 1
+            return cache[a, b]
+
+        suspect = 0
+        for i in range(1, n):
+            if x_knows(suspect, i):
+                suspect = i
+
+        for i in range(n):
+            if i != suspect:
+                if not x_knows(i, suspect) or x_knows(suspect, i):
+                    return -1
+
+        return suspect
 
 
 def test():
-    # graph, celebrity_idx = generate_graph(10)
-    celebrity_idx = 9
+    celebrity_idx = 14
     graph = [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+        [1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0],
+        [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+        [0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1],
+        [1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0],
+        [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1],
+        [0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0],
+        [1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 0],
+        [0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
+        [1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
+        [1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1],
+        [0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0],
+        [1, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+        [1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1],
+        [0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0],
+        [1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+        [1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0],
+        [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1]
     ]
-    print('\n'.join([str(row) for row in graph]))
-    print(f'celebrity_idx = {celebrity_idx}')
     sol = Solution(graph)
-    res = sol.find_celebrity_1(10)
-    print(res)
-    # if res != celebrity_idx:
-    #     raise Exception('error', '\n'.join([str(row) for row in graph]))
+    res = sol.find_celebrity_3(len(graph))
+    if res != celebrity_idx:
+        print(f'wrong answer: {res} != {celebrity_idx}')
+    print(f'Good answer: {res} == {celebrity_idx}')
     return sol.knows_counter
 
 
-print(test())
+def random_test():
+    graph, celebrity_idx = generate_graph(100)
+    sol = Solution(graph)
+    res = sol.find_celebrity_2(len(graph))
+    if res != celebrity_idx:
+        print(f'wrong answer: {res} != {celebrity_idx}')
+        print('\n'.join([str(row) for row in graph]))
+        raise Exception('error')
+    return sol.knows_counter
 
-# num_counters = 0
-# max_counter = 0
-# sum_counter = 0
-# for _ in range(1000):
-#     counter = test()
-#     if counter > max_counter:
-#         max_counter = counter
-#     sum_counter += counter
-#     num_counters += 1
-#
-# print(max_counter)
-# print(sum_counter / num_counters)
+
+def run_random_tests():
+    num_counters = 0
+    max_counter = 0
+    sum_counter = 0
+    for _ in range(1000):
+        counter = random_test()
+        if counter > max_counter:
+            max_counter = counter
+        sum_counter += counter
+        num_counters += 1
+    print(f'max_counter = {max_counter}')
+    print(f'avg_counter = {sum_counter / num_counters}')
+
+
+run_random_tests()
+# test()
