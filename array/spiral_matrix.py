@@ -26,6 +26,7 @@ n == matrix[i].length
 from typing import List
 from math import ceil
 
+# Note: see also contest_dec_2020/week_1/08_spiral_maxtrix.py
 
 class Solution:
     def spiral_order_2(self, matrix: List[List[int]]) -> List[int]:
