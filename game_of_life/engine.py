@@ -196,3 +196,5 @@ def test():
 
 
 test()
+
+# TODO: board from file
