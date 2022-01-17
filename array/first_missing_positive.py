@@ -21,38 +21,83 @@ Constraints:
 -2^31 <= nums[i] <= 2^31 - 1
 """
 from typing import List
+import random
 
 
 class Solution:
-    def first_missing_positive(self, nums: List[int]) -> int:
-        min_val = float('inf')
-        max_val = float('-inf')
-        counter = 0
-        for n in nums:
+    def first_missing_positive1(self, nums: List[int]) -> int:
+        nums_len = len(nums)
+        for i in range(nums_len):
+            while nums[i] != 0 and nums[i] != i + 1:
+                j = nums[i] - 1
+                if 0 <= j < nums_len and nums[j] != nums[i]:
+                    nums[j], nums[i] = nums[i], nums[j]
+                else:
+                    nums[i] = 0
+
+        for i, n in enumerate(nums):
+            if n == 0:
+                return i + 1
+
+        return nums_len + 1
+
+    def first_missing_positive2(self, nums: List[int]) -> int:
+        nums_len = len(nums)
+
+        if 1 not in nums:
+            return 1
+
+        for i, n in enumerate(nums):
+            if n <= 0 or n > nums_len:
+                nums[i] = 1
+
+        for i, n in enumerate(nums):
+            j = abs(n) - 1
+            nums[j] = -abs(nums[j])
+
+        for i, n in enumerate(nums):
             if n > 0:
-                if n < min_val:
-                    min_val = n
-                if n > max_val:
-                    max_val = n
-                counter += 1
+                return i + 1
 
-        print(f'min_val = {min_val}, max_val = {max_val}, counter = {counter}')
-        if counter < max_val - min_val:
-            pass
-
-        return 0
+        return nums_len + 1
 
 
 def test():
     sol = Solution()
-    # res = sol.first_missing_positive([1, 2, 0])
-    # print(res)
-    # res = sol.first_missing_positive([3, 4, -1, 1])
-    # print(res)
-    # res = sol.first_missing_positive([7, 8, 9, 11, 12])
-    # print(res)
-    res = sol.first_missing_positive([2, 1])
-    print(res)
+    res = sol.first_missing_positive2([1, 2, 0])
+    print(f'3 = {res}')
+    res = sol.first_missing_positive2([3, 4, -1, 1])
+    print(f'2 = {res}')
+    res = sol.first_missing_positive2([7, 8, 9, 11, 12])
+    print(f'1 = {res}')
+    res = sol.first_missing_positive2([2, 1])
+    print(f'3 = {res}')
+    res = sol.first_missing_positive2([-7, 1, 8, -5, 2, 7, -10, 3, 6])
+    print(f'4 = {res}')
+    res = sol.first_missing_positive2([1, 1, 1, 1, 1])
+    print(f'2 = {res}')
+
+
+def random_tests():
+    sol = Solution()
+    arr = [i for i in range(-99, 100)]
+    for i in range(30):
+        arr.pop(random.randint(-99, 99))
+
+    ans = None
+    prev = 0
+    for i in sorted(arr):
+        if i > 0:
+            if i != prev + 1:
+                ans = prev + 1
+                break
+            else:
+                prev += 1
+
+    res = sol.first_missing_positive2(arr)
+    print(f'{ans == res}')
 
 
 test()
+for _ in range(100):
+    random_tests()
