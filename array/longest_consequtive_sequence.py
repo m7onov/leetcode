@@ -23,15 +23,29 @@ import random
 
 class Solution:
     def longest_consecutive(self, nums: List[int]) -> int:
-        nums_len = len(nums)
-        nums_min = min(nums)
-        for i in range(nums_len):
-            while (nums[i] - nums_min) < nums_len and nums[i] != i:
-                j = nums[i] - nums_min
-                nums[j], nums[i] = j, nums[j]
+        m = set(nums)  # O(n)
+        max_len = 0
 
-        print(nums)
-        return 0
+        # В сумме 3 while дадут ровно n итераций => O(n)
+        while len(m) > 0:
+            n = m.pop()
+            ln = 1
+
+            i = 1
+            while n + i in m:
+                m.discard(n + i)
+                ln += 1
+                i += 1
+
+            i = 1
+            while n - i in m:
+                m.discard(n - i)
+                ln += 1
+                i += 1
+
+            max_len = max(ln, max_len)
+
+        return max_len
 
     def longest_consecutive2(self, nums: List[int]) -> int:
         if len(nums) == 0:
@@ -74,6 +88,8 @@ def test():
     sol = Solution()
     # res = sol.longest_consecutive2([100, 4, 200, 1, 3, 2])
     res = sol.longest_consecutive2([7, -9, 3, -6, 3, 5, 3, 6, -2, -5, 8, 6, -4, -6, -4, -4, 5, -9, 2, 7, 0, 0])
+    print(res)
+    res = sol.longest_consecutive([100, 4, 200, 1, 3, 2, 201, 202, 203, 204])
     print(res)
 
 
