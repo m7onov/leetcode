@@ -193,24 +193,29 @@ class Solution:
         return ret_val
 
     def find_duplicate_tortoise_and_hare(self, nums: List[int]) -> int:
-        # FIXME: ЦИКЛЫ? Как от них избавиться?
         nums_len = len(nums)
-        tortoise_idx = 0
-        hare_idx = 1
+        tortoise_val = nums[0]
+        hare_val = nums[0]
+        phase = 1
 
-        def next_idx(cur_idx: int, incr: int) -> int:
+        def next_val(cur_idx: int, incr: int) -> int:
             new_idx = cur_idx
             for _ in range(incr):
                 new_idx = nums[new_idx]
-            if new_idx == cur_idx:
-                new_idx = (new_idx + 1) % nums_len
             return new_idx
 
-        for _ in range(len(nums)):
-            tortoise_idx = next_idx(tortoise_idx, 1)
-            hare_idx = next_idx(hare_idx, 2)
-            if tortoise_idx == hare_idx:
-                return tortoise_idx
+        for i in range(2 * nums_len):
+            # print(f'{i}: tortoise_val = {tortoise_val}, hare_val = {hare_val}')
+            tortoise_val = next_val(tortoise_val, 1)
+            hare_val = next_val(hare_val, 2 if phase == 1 else 1)
+            if tortoise_val == hare_val:
+                # print(f'i = {i}, phase = {phase}, tortoise_val = {tortoise_val}, hare_val = {hare_val}')
+                if phase == 1:
+                    tortoise_val = nums[0]
+                    phase = 2
+                if phase == 2 and tortoise_val == hare_val:
+                    return tortoise_val
+
         raise Exception('unexpected')
 
     def find_duplicate(self, nums: List[int]) -> int:
@@ -234,29 +239,33 @@ def specific_tests():
                               28, 14, 83, 27, 85, 53, 37, 35, 25, 67, 68, 42, 23, 63, 51, 71, 31, 74, 34, 80, 59, 22,
                               50, 8, 3, 58, 32, 77, 91, 96, 59, 9, 61, 98, 59, 95, 12, 21, 72, 7, 62, 59, 66, 10, 69,
                               81, 6, 33, 45, 100, 15, 36, 16, 57, 43])
-    print(res)
+    print(res)  # 59
     res = sol.find_duplicate([3, 2, 2, 2, 4])
     print(res)
 
 
-def generate_random_test():
-    nums = [i for i in range(1, 101)]
-    dup = randint(1, 100)
-    for i in range(randint(1, 10)):
-        nums[randint(0, 100)] = dup
+def generate_random_test(nums_len=100):
+    nums = [i for i in range(1, nums_len+1)]
+    dup = randint(1, nums_len)
+    for i in range(randint(1, min(10, nums_len))):
+        nums[randint(0, nums_len-1)] = dup
     nums.append(dup)
     shuffle(nums)
     return nums, dup
 
 
-def do_random_tests():
-    nums, dup = generate_random_test()
-    print('nums is ', nums)
-    print('dup is ', dup)
+def do_random_test():
+    nums, dup = generate_random_test(15)
     sol = Solution()
     ans = sol.find_duplicate(nums)
     print(f'{ans} = {dup}')
+    if ans != dup:
+        print('nums is ', nums)
+        print('dup is ', dup)
+        raise Exception('wrong answer')
 
 
-# do_random_tests()
-specific_tests()
+for _ in range(100):
+    do_random_test()
+
+# specific_tests()
