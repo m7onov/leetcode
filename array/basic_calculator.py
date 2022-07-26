@@ -115,9 +115,9 @@ class Solution:
 
 def tests():
     sol = Solution()
-    for s, res in [('0-123', -123), ('1*2+3*4', 14), ('1+1+1', 3), (' 3+5 / 2', 5), (' 3/2 ', 1), ('3+2*2', 7)]:
+    for s, ans in [('0-123', -123), ('1*2+3*4', 14), ('1+1+1', 3), (' 3+5 / 2', 5), (' 3/2 ', 1), ('3+2*2', 7)]:
         res = sol.calculate2(s)
-        print(f'{s} -> {res}')
+        print(f'{s} -> {res} == {ans}')
 
 
 tests()
