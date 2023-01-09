@@ -140,3 +140,5 @@ def test1():
 
 
 test1()
+
+# TODO: implment also https://leetcode.com/problems/guess-the-word/solutions/134087/elimination-histogram/
